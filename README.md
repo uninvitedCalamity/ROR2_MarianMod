@@ -19,7 +19,7 @@ Always fires 5 missiles, tries to evenly distribute missiles across enemies.
 
 ### Grapple
 Grapple changes Marian's primary skill.
-Grapple primary will pull Marian towards Grappled point, will deal damage and stun to grappled enemies.
+Grapple primary will pull Marian towards Grappled point, Grapple will gradually slow Marian down when close to grapple point (Unless attached to an enemy), will deal damage and stun to grappled enemies.
 Jumping increases velocity.
 Grapple will pull until skill 1 is released, you jump, or grappled enemy is contacted.
 Range is indicated on the "UI"
