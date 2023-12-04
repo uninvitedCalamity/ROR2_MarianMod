@@ -1,0 +1,79 @@
+ManifestFileVersion: 0
+CRC: 1739767782
+Hashes:
+  AssetFileHash:
+    serializedVersion: 2
+    Hash: 1a3db7409f58ebfc74e8e45ca40889eb
+  TypeTreeHash:
+    serializedVersion: 2
+    Hash: d0dabe01e9e16b70cc45b7a3bed89151
+HashAppended: 0
+ClassTypes:
+- Class: 1
+  Script: {instanceID: 0}
+- Class: 4
+  Script: {instanceID: 0}
+- Class: 21
+  Script: {instanceID: 0}
+- Class: 28
+  Script: {instanceID: 0}
+- Class: 43
+  Script: {instanceID: 0}
+- Class: 48
+  Script: {instanceID: 0}
+- Class: 74
+  Script: {instanceID: 0}
+- Class: 90
+  Script: {instanceID: 0}
+- Class: 91
+  Script: {instanceID: 0}
+- Class: 95
+  Script: {instanceID: 0}
+- Class: 96
+  Script: {instanceID: 0}
+- Class: 114
+  Script: {fileID: 11500000, guid: 9a68da65c907acb4eb4dbcd042f172e7, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 261c50d8a80898e4ebf2e8e415ea6766, type: 3}
+- Class: 115
+  Script: {instanceID: 0}
+- Class: 136
+  Script: {instanceID: 0}
+- Class: 137
+  Script: {instanceID: 0}
+- Class: 198
+  Script: {instanceID: 0}
+- Class: 199
+  Script: {instanceID: 0}
+SerializeReferenceClassIdentifiers: []
+Assets:
+- Assets/Marian/marian/MarianTextures/MetalTexture.png
+- Assets/Marian/marian/MarianTextures/RoughnessLegs.png
+- Assets/Marian/marian/MarianTextures/Eyes.mat
+- Assets/Marian/marian/MarianDisplay.prefab
+- Assets/Marian/marian/MarianTextures/MarianLegs.mat
+- Assets/Marian/marian/MarianEnergyProjectile.prefab
+- Assets/Marian/marian/MarianTextures/MarianUpperody.mat
+- Assets/Marian/marian/MarianTextures/BodyTexture.png
+- Assets/Marian/marian/GrappleHead.prefab
+- Assets/Marian/marian/MarianTextures/Shorts.mat
+- Assets/Marian/marian/PierceShot_1.prefab
+- Assets/Marian/marian/MarianTextures/animMarian.controller
+- Assets/Marian/marian/MarianTextures/animMarianEntry.controller
+- Assets/Marian/marian/MarianTextures/GreenEmissive.png
+- Assets/Marian/marian/MarianTextures/BasicLaser.mat
+- Assets/Marian/marian/MarianTextures/Bra.mat
+- Assets/Marian/marian/MarianTextures/MetallicLegs.png
+- Assets/Marian/marian/ElectroBoltDet.prefab
+- Assets/Marian/marian/MarianTextures/EyeTexture.png
+- Assets/Marian/marian/MarianTextures/Shorts.png
+- Assets/Marian/marian/MarianTextures/Roughness.png
+- Assets/Marian/marian/MurathMissileDetonation.prefab
+- Assets/Marian/marian/MarianTextures/LegsTexture.png
+- Assets/Marian/marian/MarianTextures/Robotics.mat
+- Assets/Marian/marian/mdlMarian.prefab
+- Assets/Marian/marian/OverchargeShot_Variant2.prefab
+- Assets/Marian/marian/MarianTextures/Metallic.png
+- Assets/Marian/marian/Marian_OverchargeShot_Variant2.prefab
+Dependencies:
+- C:/Users/djtor/Desktop/TEMP/murathmachinist
