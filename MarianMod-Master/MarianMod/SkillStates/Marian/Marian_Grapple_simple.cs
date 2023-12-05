@@ -34,6 +34,7 @@ namespace MarianMod.SkillStates
         bool jump = false;
         bool hasHealthComponent;
         bool enteredCollision = false;
+        Vector3 pos = Vector3.zero;
 
         public bool upwardSearch(GameObject observing, bool searching)
         {
@@ -140,7 +141,9 @@ namespace MarianMod.SkillStates
                 return;
             }
 
-            Vector3 pos = targetPoint.TransformPoint(targetOffset);
+            if(targetPoint != null)
+                pos = targetPoint.TransformPoint(targetOffset);
+
             grapple.position = pos;
 
             if (base.fixedAge < delay)

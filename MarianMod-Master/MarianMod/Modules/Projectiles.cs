@@ -31,6 +31,7 @@ namespace MarianMod.Modules
             AddProjectile(NapalmLarge);
             AddProjectile(stickyFirePrefab);
             AddProjectile(Missile);
+            AddProjectile(IceBomb);
         }
 
         internal static void AddProjectile(GameObject projectileToAdd)

@@ -57,7 +57,7 @@ namespace MarianMod.SkillStates
             newDir += new Vector3(Random.Range(-var, var), Random.Range(-var, var), Random.Range(-var, var));
             newDir = newDir.normalized;
             //Log.Debug("Start-----------------------------------------");
-            Fire(newDir);
+            this.Fire(newDir);
             #region DrawOnly Ray
             Transform modelTransform = base.GetModelTransform();
             #endregion
@@ -70,7 +70,7 @@ namespace MarianMod.SkillStates
         public void Fire(Vector3 newDir)
         {
             //bombPrefab.GetComponent<ProjectileSimple>().desiredForwardSpeed = base_desired_speed;
-            ProjectileManager.instance.FireProjectile(Icebomb,
+            ProjectileManager.instance.FireProjectile(this.Icebomb,
                 locator.FindChild("FirePoint").position,
                 Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
                 base.gameObject,
@@ -85,7 +85,6 @@ namespace MarianMod.SkillStates
         {
             if (!hasFired)
             {
-
                 hasReleased = true;
                 //Util.PlaySound("PheonixBombThrow", base.gameObject);
                 base_desired_speed *= (Mathf.Clamp(base.fixedAge / windup, 0, max_multiplier));
@@ -106,7 +105,7 @@ namespace MarianMod.SkillStates
                 { ScatterFire(newDir); }
                 while (currentCount < 5);
                 */
-                ScatterFire(newDir);
+                this.ScatterFire(newDir);
                 this.hasFired = true;
             }
         }
@@ -118,7 +117,7 @@ namespace MarianMod.SkillStates
             if (base.isAuthority)
             {
                 if(!hasFired && base.fixedAge >= windup)
-                    StartFire();
+                    this.StartFire();
                 if (base.fixedAge >= duration && hasFired)
                     outer.SetNextStateToMain();
             }
