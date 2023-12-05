@@ -42,6 +42,9 @@ Marian throws/fires and Ice bomb, freezing enemies for 12 seconds
 - Alternate UI colours for Colour-blindness
 - Add Specific animations for Grapple and Icebomb
 
+## Version 1.0.2
+- Remove / mute logs in Primary, Missile and Grapple Switch
+
 ## Version 1.0.1
 - Fixed issue with Icebombs not spawning from client players
 - Check for Null Target in marian_grapple_simple
