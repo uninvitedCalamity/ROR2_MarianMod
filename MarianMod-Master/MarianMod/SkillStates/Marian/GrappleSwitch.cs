@@ -67,7 +67,7 @@ namespace MarianMod.SkillStates
                 this.TryOverrideSkill(genericSkill);
                 genericSkill.onSkillChanged += this.TryOverrideSkill;
             }
-            Log.Debug("OverriddenSkill");
+            //Log.Debug("OverriddenSkill");
             Camera = GameObject.Find("Main Camera(Clone)");
             if (Target == null && !m1Pressed)
                 Target = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.GrappleSprite, Camera.transform.position, Quaternion.identity).transform;
@@ -90,7 +90,7 @@ namespace MarianMod.SkillStates
             {
                 overrideRequest.Dispose();
             }
-            Log.Debug("Skill Unassigned");
+            //Log.Debug("Skill Unassigned");
             base.OnExit();
         }
 
@@ -277,7 +277,7 @@ namespace MarianMod.SkillStates
             }
             else
             {
-                Log.Debug("Override is lacking");
+                //Log.Debug("Override is lacking");
             }
         }
 

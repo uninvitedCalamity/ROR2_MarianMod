@@ -61,7 +61,6 @@ namespace MarianMod.SkillStates
             AimRayCopy = base.GetAimRay();
             GetCurrentTargetInfo();
             missileDelay /= base.attackSpeedStat;
-            Log.Debug(base.activatorSkillSlot);
             Camera = GameObject.Find("Main Camera(Clone)");
             //missileCount = (int)(missileCount * Mathf.Clamp(base.attackSpeedStat / 2,1,20));
         }
@@ -116,7 +115,6 @@ namespace MarianMod.SkillStates
 
         private void GetCurrentTargetInfo()
         {
-            Log.Debug("Clearing and getting targets");
             for (int i = 0; i < Targets.Length; i++)
             {
                 if (Targets[i] != null)
@@ -128,7 +126,6 @@ namespace MarianMod.SkillStates
             {
                 if (indicators[i] != null)
                 {
-                    Log.Debug("Clearing Indicator " + i);
                     Destroy(indicators[i].gameObject);
                 }
                 indicators[i] = null;
@@ -156,7 +153,6 @@ namespace MarianMod.SkillStates
                 {
                     if (TargetCount >= missileCount)
                         return;
-                    Log.Debug("Target Count = " + TargetCount + ", MissileCount = " + missileCount);
 
                     bool interrupted = false;
                     RaycastHit raycastHit = new RaycastHit();
@@ -197,7 +193,6 @@ namespace MarianMod.SkillStates
                         } while (searching);
 
                         interrupted = !ChildFound;
-                        Log.Debug("Child Found Status = " + ChildFound);
                     }
 
                     BaseRay.origin = locator.FindChild("MissilePoint").position;
@@ -240,18 +235,15 @@ namespace MarianMod.SkillStates
                             } while (searching);
 
                             interrupted = !ChildFound;
-                            Log.Debug("Child Found Status = " + ChildFound);
                         }
                     }
 
                     if (!interrupted)
                     {
-                        Log.Debug(hurtBox.healthComponent.gameObject.name);
                         Targets[TargetCount] = hurtBox.transform;
 
                         if (indicators[TargetCount] == null)
                         {
-                            Log.Debug("Adding Indicator " + TargetCount);
                             Quaternion LR = Quaternion.LookRotation((hurtBox.transform.position - BaseRay.origin).normalized);
                             indicators[TargetCount] = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.MissileSprite, hurtBox.transform.position, LR).transform;
                             indicators[TargetCount].localScale = new Vector3(1, 1, 1);
@@ -266,11 +258,9 @@ namespace MarianMod.SkillStates
 
 
         public Vector3 setPostion(Transform TargetObject, Vector3 FarPosition)
-        {
-            Log.Debug("Setting Target");            
+        {           
             if (Camera != null)
             {
-                Log.Debug("Camera is not null");
                 float Distance = Vector3.Distance(FarPosition, Camera.transform.position);
                 float percent = 0.1f / Distance;
                 Vector3 currentTargetObject = (Camera.transform.position * (1 - percent)) + (FarPosition * (percent));
@@ -305,12 +295,10 @@ namespace MarianMod.SkillStates
 
         public void Fire(Vector3 newDir)
         {
-            Log.Debug("FiringMissiles");
             GameObject Missile = Modules.Projectiles.Missile;
             base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
             if (Targets[onTarget] != null)
             {
-                Log.Debug("Missile Target Found at: " + onTarget + " Target: " + Targets[onTarget].GetComponent<HurtBox>().healthComponent.gameObject.name);
                 Target = Targets[onTarget];// nijhoqefw.transform;
                 onTarget++;
             }
@@ -418,7 +406,6 @@ namespace MarianMod.SkillStates
             {
                 if (indicators[i] != null)
                 {
-                    Log.Debug("Clearing Indicator " + i);
                     Destroy(indicators[i].gameObject);
                 }
                 indicators[i] = null;

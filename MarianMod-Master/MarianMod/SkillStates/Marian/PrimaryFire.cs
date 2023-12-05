@@ -22,7 +22,6 @@ namespace MarianMod.SkillStates
         private bool hasFired;
         private Animator animator;
         private bool hasReleased = false;
-        GameObject bombPrefab;
         public float currentCount = 0;
         float Range = 50;
         GameObject impactFlash;
@@ -40,15 +39,12 @@ namespace MarianMod.SkillStates
             this.modelTransform = base.GetModelTransform();
             this.locator = modelTransform.GetComponent<ChildLocator>();
 
-            bombPrefab = Modules.Projectiles.boltPrefab;
-
             base.PlayAnimation("Gesture, Override", "ShootGun", "ShootGun.playbackRate", this.duration);
             float firerate = (1 / windUp) * base.attackSpeedStat;
             //animator.SetFloat("Firerate", firerate);
             base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
 
             impactFlash = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab;
-            impactFlash.transform.localScale *= 1f;
         }
 
         public void ScatterFire(Vector3 newDir)
@@ -78,19 +74,6 @@ namespace MarianMod.SkillStates
             //Log.Debug("End------------------------------------------");
 
 
-        }
-
-        public void Fire(Vector3 newDir)
-        {
-            ProjectileManager.instance.FireProjectile(bombPrefab,
-                locator.FindChild("FirePoint").position,
-                Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
-                base.gameObject,
-                1f * base.damageStat,
-                0f,
-                base.RollCrit(),
-                DamageColorIndex.Default,
-                null);
         }
 
         public void Fire2(Transform ElectroOutput, float distance, Vector3 Direction)
@@ -128,12 +111,6 @@ namespace MarianMod.SkillStates
                 hitEffectPrefab = impactFlash//EntityStates.Commando.CommandoWeapon.FirePistol2.hitEffectPrefab,
             }.Fire();
         }
-    
-
-        public void hitscan(Vector3 newDir)
-        {
-            
-        }
 
         public override void FixedUpdate()
         {
@@ -145,12 +122,10 @@ namespace MarianMod.SkillStates
                     {
                         Util.PlaySound(EntityStates.Commando.CommandoWeapon.FirePistol2.firePistolSoundString, base.gameObject);
                         hasReleased = true;
-                        //Util.PlaySound("PheonixBombThrow", base.gameObject);
 
                         Ray aimRay = base.GetAimRay();
                         Vector3 newDir = base.gameObject.transform.position;
                         newDir += aimRay.direction;
-                        //newDir += Vector3.up / 20;
                         scatter = 0;
 
                         newDir += new Vector3(Random.Range(-scatter, scatter), Random.Range(-scatter, scatter), Random.Range(-scatter, scatter));
