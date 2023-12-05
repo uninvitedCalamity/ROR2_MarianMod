@@ -40,6 +40,11 @@ Marian throws/fires and Ice bomb, freezing enemies for 12 seconds
 - Mastery skin
 - New explosion fx for ice bomb
 - Alternate UI colours for Colour-blindness
+- Add Specific animations for Grapple and Icebomb
+
+## Version 1.0.1
+- Fixed issue with Icebombs not spawning from client players
+- Check for Null Target in marian_grapple_simple
 
 ## Version 1.0.0
 - Initial upload
@@ -48,3 +53,4 @@ Marian throws/fires and Ice bomb, freezing enemies for 12 seconds
 - Model, Animations and Abilities made by Uninvited Calamity (Me :D, Blend file can be downloaded from https://github.com/uninvitedCalamity/ROR2_MarianMod/tree/main/BlendFile/GitCopy).
 - Character built using the Henry Example by ArcPh1r3.
 - Lodington for the Cheats for testing and sinai-dev for Unity explorer.
+- HIFU for informing me of the one line needed to fix the icebomb issue.
