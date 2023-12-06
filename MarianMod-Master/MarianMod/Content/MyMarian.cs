@@ -139,7 +139,7 @@ namespace MarianMod.Modules.Survivors
                 baseMaxStock = 0,
                 baseRechargeInterval = 0.25f,
                 beginSkillCooldownOnSkillEnd = false,
-                canceledFromSprinting = true,
+                canceledFromSprinting = false,
                 forceSprintDuringState = false,
                 fullRestockOnAssign = true,
                 interruptPriority = EntityStates.InterruptPriority.Any,

@@ -14,7 +14,8 @@ namespace MarianMod
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [BepInPlugin(MODUID, MODNAME, MODVERSION)]
+    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.0.3")]
+    [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [R2APISubmoduleDependency(new string[]
     {
         "PrefabAPI",
@@ -30,7 +31,7 @@ namespace MarianMod
         //   this shouldn't even have to be said
         public const string MODUID = "com.uninvitedcalamity.MarianMod";
         public const string MODNAME = "UninvitedCalamity_MarianMod";
-        public const string MODVERSION = "1.0.0";
+        public const string MODVERSION = "1.0.3";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "UninvitedCalamity";
@@ -39,6 +40,13 @@ namespace MarianMod
 
         private void Awake()
         {
+            if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.johnedwa.RTAutoSprintEx"))
+            {
+                SendMessage("RT_SprintDisableMessage", "MarianMod.SkillStates.PrimaryFire");
+                SendMessage("RT_SprintDisableMessage", "MarianMod.SkillStates.MarianFlare");
+            }
+
+
             instance = this;
 
             Log.Init(Logger);
