@@ -48,7 +48,7 @@ namespace MarianMod.Modules
             LanguageAPI.Add(prefix + "SECONDARY_GUN_DESCRIPTION", Helpers.agilePrefix + $"Fire a handgun for <style=cIsDamage>{100f * StaticValues.gunDamageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "ICEBOMB", "Ice bomb");
-            LanguageAPI.Add(prefix + "ICEBOMB_DESCRIPTION", $"Fire a grenade, freezing enemies for <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef}% damage</style>.");
+            LanguageAPI.Add(prefix + "ICEBOMB_DESCRIPTION", $"Fire a grenade, freezing enemies for <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef}% damage</style> over {2 * MarianMod.Modules.Projectiles.iceProc}.");
             #endregion
 
             #region Utility

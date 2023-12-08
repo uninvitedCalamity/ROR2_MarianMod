@@ -74,7 +74,7 @@ namespace MarianMod.SkillStates
             Target.transform.parent = Camera.transform;
             Target.transform.rotation = Camera.transform.rotation;
             Target.transform.localScale = BaseScale * Size;
-            Target.localPosition = new Vector3(0, 0, 0.1f); // <- make this change based on how close the hit point is to the max distance.
+            Target.localPosition = new Vector3(0, 0, 0.05f); // <- make this change based on how close the hit point is to the max distance.
         }
 
         public override void OnExit()
@@ -130,7 +130,7 @@ namespace MarianMod.SkillStates
                 if(overrideRequest == null && !m1Pressed)
                     if (EntityStates.Engi.EngiMissilePainter.Paint.crosshairOverridePrefab)
                     {
-                        this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, EntityStates.Huntress.AimArrowSnipe.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
+                        //this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, EntityStates.Huntress.AimArrowSnipe.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
                         //this.crosshairOverrideRequestSprint = CrosshairUtils.RequestOverrideForBody(base.characterBody, EntityStates.Engi.EngiMissilePainter.Paint.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Sprint);
                     }
 

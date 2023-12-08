@@ -16,7 +16,11 @@ namespace MarianMod.Modules
 
             Modules.Content.AddEntityState(typeof(Roll));
 
-            Modules.Content.AddEntityState(typeof(ThrowBomb));
+            Modules.Content.AddEntityState(typeof(Marian_Grapple_simple));
+            Modules.Content.AddEntityState(typeof(PrimaryFire));
+            Modules.Content.AddEntityState(typeof(MarianIceBomb));
+            Modules.Content.AddEntityState(typeof(GrappleSwitch));
+            Modules.Content.AddEntityState(typeof(MarianFlare));
         }
     }
 }

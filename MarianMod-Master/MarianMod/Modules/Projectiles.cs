@@ -8,28 +8,20 @@ namespace MarianMod.Modules
 {
     internal static class Projectiles
     {
-        internal static GameObject bombPrefab;
         internal static GameObject boltPrefab;
         internal static GameObject stickyFirePrefab;
         internal static GameObject NapalmLarge;
         internal static GameObject IceBomb;
         internal static GameObject Missile;
-        internal static GameObject Missile1;
-        internal static GameObject Missile2;
-        internal static GameObject Missile3;
-        internal static GameObject Missile4;
+
+
+        public static float iceProc = 2.3f;
 
         internal static void RegisterProjectiles()
         {
             CreateIceBomb();
-            CreateBolt();
-            createNapalm();
-            createStickyFire();
             Missile = CreateMissile(0);
 
-            AddProjectile(boltPrefab);
-            AddProjectile(NapalmLarge);
-            AddProjectile(stickyFirePrefab);
             AddProjectile(Missile);
             AddProjectile(IceBomb);
         }
@@ -72,12 +64,12 @@ namespace MarianMod.Modules
             pd.damageType = DamageType.Freeze2s;
             
 
-            bombImpactExplosion.blastRadius = 16 * 2f;
+            bombImpactExplosion.blastRadius = 10 * 2f;
             bombImpactExplosion.destroyOnEnemy = true;
             bombImpactExplosion.destroyOnWorld = true;
             bombImpactExplosion.lifetime = 6f;
             bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
-            bombImpactExplosion.blastProcCoefficient = 3f;
+            bombImpactExplosion.blastProcCoefficient = iceProc;
             //bombImpactExplosion.explosionEffect = bombImpactExplosion.impactEffect;
             //bombImpactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("MarianBombExplosion");
             bombImpactExplosion.timerAfterImpact = false;

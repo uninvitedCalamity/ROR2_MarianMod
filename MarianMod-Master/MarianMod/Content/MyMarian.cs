@@ -161,7 +161,7 @@ namespace MarianMod.Modules.Survivors
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.MarianIceBomb)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 25f,
+                baseRechargeInterval = 17f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -272,6 +272,7 @@ namespace MarianMod.Modules.Survivors
             ChildLocator childLocator = model.GetComponent<ChildLocator>();
 
             CharacterModel.RendererInfo[] defaultRendererinfos = characterModel.baseRendererInfos;
+            Log.Debug("Render infos count = " + defaultRendererinfos.Length);
 
 
             List<SkinDef> skins = new List<SkinDef>();
@@ -292,59 +293,43 @@ namespace MarianMod.Modules.Survivors
 
             //add new skindef to our list of skindefs. this is what we'll be passing to the SkinController
             skins.Add(defaultSkin);
-
-            CharacterModel.RendererInfo[] defaultRenderers = characterModel.baseRendererInfos;
-
-            SkinDef NoPant = Modules.Skins.CreateSkinDef(Marian_PREFIX + "NOPANT_SKIN_NAME",
+            
+            SkinDef NoPantV2 = Modules.Skins.CreateSkinDef(Marian_PREFIX + "NOPANT_SKIN_NAME",
                 Assets.mainAssetBundle.LoadAsset<Sprite>("Marian_noShorts"),
-                defaultRenderers,
+                defaultRendererinfos,
                 model);
 
-            NoPant.meshReplacements = new SkinDef.MeshReplacement[]
-{
-                //place your mesh replacements here
-                //unnecessary if you don't have multiple skins
-                
-                new SkinDef.MeshReplacement
-                {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("UpperBody"),
-                    renderer = defaultRenderers[0].renderer
-                },
-                new SkinDef.MeshReplacement
-                {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("LowerBody"),
-                    renderer = defaultRenderers[1].renderer
-                },
-                new SkinDef.MeshReplacement
-                {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("MouthAndEyes"),
-                    renderer = defaultRenderers[2].renderer
-                },
-                new SkinDef.MeshReplacement
-                {
-                    //mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("SpaceMan"),
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("Robotics"),
-                    renderer = defaultRenderers[3].renderer
-                },
-                new SkinDef.MeshReplacement
-                {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("EmptyPlane"),
-                    renderer = defaultRenderers[4].renderer
-                },
-                new SkinDef.MeshReplacement
-                {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("MechaBra"),
-                    renderer = defaultRenderers[5].renderer
-                },
-                new SkinDef.MeshReplacement
-                {
-                    mesh = Modules.Assets.mainAssetBundle.LoadAsset<Mesh>("Grapples"),
-                    renderer = defaultRenderers[6].renderer
-                }
+            Log.Debug("MeshRaplacements");
+            NoPantV2.meshReplacements = Modules.Skins.getMeshReplacements(defaultRendererinfos,
+                null,
+                null,//no gun mesh replacement. use same gun mesh
+                null,
+                null,
+                null,
+                null,
+                null);
 
+            Log.Debug("RenderInfos");
+            NoPantV2.rendererInfos[1].defaultMaterial = defaultSkin.rendererInfos[1].defaultMaterial;
+            NoPantV2.rendererInfos[2].defaultMaterial = defaultSkin.rendererInfos[2].defaultMaterial;
+            NoPantV2.rendererInfos[3].defaultMaterial = defaultSkin.rendererInfos[3].defaultMaterial;
+            NoPantV2.rendererInfos[4].defaultMaterial = defaultSkin.rendererInfos[4].defaultMaterial;
+            NoPantV2.rendererInfos[5].defaultMaterial = defaultSkin.rendererInfos[5].defaultMaterial;
+            NoPantV2.rendererInfos[6].defaultMaterial = defaultSkin.rendererInfos[6].defaultMaterial;
+            NoPantV2.rendererInfos[0].defaultMaterial = defaultSkin.rendererInfos[0].defaultMaterial;
+
+            Log.Debug("Deactivating Shorts");
+            NoPantV2.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("Shorts").gameObject,
+                    shouldActivate = false,
+                }
             };
 
-            skins.Add(NoPant);
+            skins.Add(NoPantV2);
+
             #endregion
 
             //uncomment this when you have a mastery skin
