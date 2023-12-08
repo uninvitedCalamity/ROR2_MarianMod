@@ -31,16 +31,25 @@ Out of range:
 ![OutOfRange](https://github.com/uninvitedCalamity/ROR2_MarianMod/blob/main/Images/20231204195618_1.jpg)
 
 ### Ice bomb
-Marian throws/fires and Ice bomb, freezing enemies for 12 seconds
+Marian throws/fires an Ice bomb, freezing enemies for 12 seconds
 
 ## Known issues
 - Still uses Murath's missile explosion fx for ice bomb
+- Sometimes Grapple "UI" randomly appears
 
 ## Objectives
 - Mastery skin
 - New explosion fx for ice bomb
 - Alternate UI colours for Colour-blindness
 - Add Specific animations for Grapple and Icebomb
+
+## Version 1.0.4
+- Taking off your shorts in the lobby nolonger causes index out of bounds error
+- Increased size of "UI"
+
+## Version 1.0.3
+- Add compatibility with Auto sprint
+- Primary is no longer canceled by sprint, but still cancels sprinting (You could tap sprint to interrupt the firecycle and fire faster)
 
 ## Version 1.0.2
 - Remove / mute logs in Primary, Missile and Grapple Switch
@@ -57,3 +66,4 @@ Marian throws/fires and Ice bomb, freezing enemies for 12 seconds
 - Character built using the Henry Example by ArcPh1r3.
 - Lodington for the Cheats for testing and sinai-dev for Unity explorer.
 - HIFU for informing me of the one line needed to fix the icebomb issue.
+- Kessmonster for telling me about the auto-run issues.
