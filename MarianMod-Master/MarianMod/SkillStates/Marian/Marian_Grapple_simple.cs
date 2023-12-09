@@ -154,7 +154,7 @@ namespace MarianMod.SkillStates
                 base.characterMotor.velocity += Vector3.up * 14;
                 jump = true;
             }
-            if (base.inputBank.skill1.justReleased || jump)
+            if (!base.inputBank.skill1.down || jump)
             {
                 outer.SetNextStateToMain();
                 return;

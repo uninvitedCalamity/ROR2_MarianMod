@@ -19,8 +19,8 @@ namespace MarianMod.Modules
 
         internal static void RegisterProjectiles()
         {
-            CreateIceBomb();
             Missile = CreateMissile(0);
+            CreateIceBomb();
 
             AddProjectile(Missile);
             AddProjectile(IceBomb);
@@ -39,6 +39,8 @@ namespace MarianMod.Modules
             Missile.GetComponent<ProjectileDamage>().damageType = DamageType.BlightOnHit;
             Log.Debug("Damage Type set");
             ProjectileSingleTargetImpact bombImpactExplosion = Missile.GetComponent<ProjectileSingleTargetImpact>();
+            if (Missile.GetComponent<ProjectileImpactExplosion>())
+                Log.Debug("Missile has bomb impact explosion");
             Log.Debug("Grab Impact Explosion");
             bombImpactExplosion.impactEffect = Modules.Assets.marianEnergyProj;
             Log.Debug("Assign explosionEffect");
@@ -68,12 +70,14 @@ namespace MarianMod.Modules
             bombImpactExplosion.destroyOnEnemy = true;
             bombImpactExplosion.destroyOnWorld = true;
             bombImpactExplosion.lifetime = 6f;
-            bombImpactExplosion.impactEffect = Modules.Assets.bombExplosionEffect;
+            bombImpactExplosion.impactEffect = Modules.Assets.iceBombExplosion;
             bombImpactExplosion.blastProcCoefficient = iceProc;
             //bombImpactExplosion.explosionEffect = bombImpactExplosion.impactEffect;
-            //bombImpactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("MarianBombExplosion");
+            //bombImpactExplosion.lifetimeExpiredSound = Modules.Assets.CreateNetworkSoundEventDef("Play_engi_seekerMissile_explode");
             bombImpactExplosion.timerAfterImpact = false;
             bombImpactExplosion.lifetimeAfterImpact = 0.01f;
+            GameObject Child2 = bombImpactExplosion.impactEffect.transform.GetChild(1).gameObject;
+            Child2.AddComponent<Modules.CustomScripts.PlaySoundOnDeath>();
 
             ProjectileController bombController = IceBomb.GetComponent<ProjectileController>();
             if (Modules.Assets.mainAssetBundle.LoadAsset<GameObject>("MarianBombGhost") != null) bombController.ghostPrefab = CreateGhostPrefab("MarianBombGhost");

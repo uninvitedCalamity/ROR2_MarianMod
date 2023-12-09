@@ -60,7 +60,7 @@ namespace MarianMod.SkillStates
             newDir = newDir.normalized;
             //Log.Debug("Start-----------------------------------------");
             //Fire(newDir);
-            Fire2(locator.FindChild("FirePoint"), Range, newDir);
+            Fire2(/*locator.FindChild("FirePoint").position*/base.GetAimRay().origin, Range, newDir);
             #region DrawOnly Ray
             Transform modelTransform = base.GetModelTransform();
             string text = "MuzzleLaser";
@@ -76,7 +76,7 @@ namespace MarianMod.SkillStates
 
         }
 
-        public void Fire2(Transform ElectroOutput, float distance, Vector3 Direction)
+        public void Fire2(Vector3 ElectroOutput, float distance, Vector3 Direction)
         {
             Vector3 AimDirection = -Direction;
 
@@ -84,7 +84,7 @@ namespace MarianMod.SkillStates
             {
                 bulletCount = 1,
                 aimVector = -AimDirection,//aimRay.direction,
-                origin = ElectroOutput.position,
+                origin = ElectroOutput,
                 damage = DamageCoef * this.damageStat,
                 damageColorIndex = DamageColorIndex.Default,
                 damageType = DamageType.Generic,
@@ -115,30 +115,35 @@ namespace MarianMod.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
-            if (base.isAuthority)
-            {
-                if (base.fixedAge >= windup)
-                    if (!hasFired)
-                    {
-                        Util.PlaySound(EntityStates.Commando.CommandoWeapon.FirePistol2.firePistolSoundString, base.gameObject);
-                        hasReleased = true;
 
-                        Ray aimRay = base.GetAimRay();
-                        Vector3 newDir = base.gameObject.transform.position;
-                        newDir += aimRay.direction;
-                        scatter = 0;
+            if (base.fixedAge >= windup)
+                if (!hasFired)
+                {
+                    this.hasFired = true;
+                    Util.PlaySound(EntityStates.Commando.CommandoWeapon.FirePistol2.firePistolSoundString, base.gameObject);
+                    if (!base.isAuthority)
+                        return;
+                    hasReleased = true;
 
-                        newDir += new Vector3(Random.Range(-scatter, scatter), Random.Range(-scatter, scatter), Random.Range(-scatter, scatter));
-                        newDir = newDir - base.gameObject.transform.position;
-                        newDir = newDir.normalized;
-                        do
-                        { ScatterFire(newDir); }
-                        while (currentCount < projectileCount);
-                        this.hasFired = true;
-                    }
-                if (base.fixedAge >= duration && hasFired)
-                    outer.SetNextStateToMain();
-            }
+                    Ray aimRay = base.GetAimRay();
+                    Vector3 anglePoint = aimRay.origin;
+                    Vector3 newDir = anglePoint;
+                    newDir += aimRay.direction;
+                    scatter = 0;
+
+                    newDir += new Vector3(Random.Range(-scatter, scatter), Random.Range(-scatter, scatter), Random.Range(-scatter, scatter));
+                    newDir = newDir - anglePoint;
+                    newDir = newDir.normalized;
+                    do
+                    { ScatterFire(newDir); }
+                    while (currentCount < projectileCount);
+
+                }
+            if (!base.isAuthority)
+                return;
+            if (base.fixedAge >= duration && hasFired)
+                outer.SetNextStateToMain();
+            
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()

@@ -1,12 +1,12 @@
 ManifestFileVersion: 0
-CRC: 1739767782
+CRC: 3453026063
 Hashes:
   AssetFileHash:
     serializedVersion: 2
-    Hash: 1a3db7409f58ebfc74e8e45ca40889eb
+    Hash: 1874dd100bd212cea8f206c820be6ff5
   TypeTreeHash:
     serializedVersion: 2
-    Hash: d0dabe01e9e16b70cc45b7a3bed89151
+    Hash: 9f723c94618ab79389b52582daea69cd
 HashAppended: 0
 ClassTypes:
 - Class: 1
@@ -15,11 +15,17 @@ ClassTypes:
   Script: {instanceID: 0}
 - Class: 21
   Script: {instanceID: 0}
+- Class: 23
+  Script: {instanceID: 0}
 - Class: 28
+  Script: {instanceID: 0}
+- Class: 33
   Script: {instanceID: 0}
 - Class: 43
   Script: {instanceID: 0}
 - Class: 48
+  Script: {instanceID: 0}
+- Class: 54
   Script: {instanceID: 0}
 - Class: 74
   Script: {instanceID: 0}
@@ -35,45 +41,93 @@ ClassTypes:
   Script: {fileID: 11500000, guid: 9a68da65c907acb4eb4dbcd042f172e7, type: 3}
 - Class: 114
   Script: {fileID: 11500000, guid: 261c50d8a80898e4ebf2e8e415ea6766, type: 3}
+- Class: 114
+  Script: {fileID: 11500000, guid: 751bd37d2e55f5f448dbb0d97812d9ba, type: 3}
 - Class: 115
   Script: {instanceID: 0}
 - Class: 136
   Script: {instanceID: 0}
 - Class: 137
   Script: {instanceID: 0}
+- Class: 144
+  Script: {instanceID: 0}
 - Class: 198
   Script: {instanceID: 0}
 - Class: 199
+  Script: {instanceID: 0}
+- Class: 212
+  Script: {instanceID: 0}
+- Class: 213
   Script: {instanceID: 0}
 SerializeReferenceClassIdentifiers: []
 Assets:
 - Assets/Marian/marian/MarianTextures/MetalTexture.png
 - Assets/Marian/marian/MarianTextures/RoughnessLegs.png
+- Assets/Marian/marian/Icons/ScatterTemp.png
 - Assets/Marian/marian/MarianTextures/Eyes.mat
+- Assets/Marian/marian/Icons/Marian_Default.png
+- Assets/Marian/marian/LowerBody.mesh
+- Assets/Marian/marian/EmptyPlane.mesh
+- Assets/Marian/marian/MarianTextures/ShotMat.mat
 - Assets/Marian/marian/MarianDisplay.prefab
+- Assets/Marian/marian/Icons/GrappleBoxSimple.png
 - Assets/Marian/marian/MarianTextures/MarianLegs.mat
+- Assets/Marian/marian/Icons/GrappleTemp.png
+- Assets/Marian/marian/Icons/MissilesTemp.png
+- Assets/Marian/marian/Icons/SlideB.png
+- Assets/Marian/marian/Icons/SlideRLarge.png
+- Assets/Marian/marian/Icons/Marian_noShorts.png
 - Assets/Marian/marian/MarianEnergyProjectile.prefab
 - Assets/Marian/marian/MarianTextures/MarianUpperody.mat
+- Assets/Marian/marian/Icons/Marian_Face_Icon.png
 - Assets/Marian/marian/MarianTextures/BodyTexture.png
+- Assets/Marian/marian/Icons/SlideT.png
+- Assets/Marian/marian/MarianTextures/LegTexture2.png
+- Assets/Marian/marian/Icons/MarianUIGrappleBox 1.png
 - Assets/Marian/marian/GrappleHead.prefab
 - Assets/Marian/marian/MarianTextures/Shorts.mat
 - Assets/Marian/marian/PierceShot_1.prefab
+- Assets/Marian/marian/Shorts.mesh
+- Assets/Marian/marian/MissileSprite.prefab
+- Assets/Marian/marian/MarianMissile2.prefab
 - Assets/Marian/marian/MarianTextures/animMarian.controller
 - Assets/Marian/marian/MarianTextures/animMarianEntry.controller
+- Assets/Marian/marian/MarianMissile.prefab
 - Assets/Marian/marian/MarianTextures/GreenEmissive.png
 - Assets/Marian/marian/MarianTextures/BasicLaser.mat
+- Assets/Marian/marian/MarianTextures/BodyTexture2.png
+- Assets/Marian/marian/MarianTextures/RoboticsTexture2.png
+- Assets/Marian/marian/Icons/IceGrenadeIcon.png
+- Assets/Marian/marian/UpperBody.mesh
+- Assets/Marian/marian/Icons/MissileIcon.png
 - Assets/Marian/marian/MarianTextures/Bra.mat
 - Assets/Marian/marian/MarianTextures/MetallicLegs.png
 - Assets/Marian/marian/ElectroBoltDet.prefab
 - Assets/Marian/marian/MarianTextures/EyeTexture.png
+- Assets/Marian/marian/Icons/GrappleIcon.png
 - Assets/Marian/marian/MarianTextures/Shorts.png
+- Assets/Marian/marian/Icons/SlideL.png
 - Assets/Marian/marian/MarianTextures/Roughness.png
+- Assets/Marian/marian/Icons/IceBombTemp.png
+- Assets/Marian/marian/Icons/GrappleInitIcon.png
+- Assets/Marian/marian/Icons/SlideR.png
+- Assets/Marian/marian/GrappleSprite.prefab
+- Assets/Marian/marian/Icons/MarianUIGrappleBox.png
 - Assets/Marian/marian/MurathMissileDetonation.prefab
 - Assets/Marian/marian/MarianTextures/LegsTexture.png
 - Assets/Marian/marian/MarianTextures/Robotics.mat
+- Assets/Marian/marian/IceGrenade.prefab
+- Assets/Marian/marian/Icons/V2.png
 - Assets/Marian/marian/mdlMarian.prefab
 - Assets/Marian/marian/OverchargeShot_Variant2.prefab
+- Assets/Marian/marian/MouthAndEyes.mesh
+- Assets/Marian/marian/Grapples.mesh
+- Assets/Marian/marian/MarianTextures/BoltMat.mat
 - Assets/Marian/marian/MarianTextures/Metallic.png
 - Assets/Marian/marian/Marian_OverchargeShot_Variant2.prefab
+- Assets/Marian/marian/Icons/SlideLLarge.png
+- Assets/Marian/marian/MechaBra.mesh
+- Assets/Marian/marian/Icons/ShotgunIcon.png
+- Assets/Marian/marian/Robotics.mesh
 Dependencies:
 - C:/Users/djtor/Desktop/TEMP/murathmachinist

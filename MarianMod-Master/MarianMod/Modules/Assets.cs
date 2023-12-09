@@ -18,6 +18,7 @@ namespace MarianMod.Modules
         internal static GameObject swordHitImpactEffect;
 
         internal static GameObject bombExplosionEffect;
+        internal static GameObject iceBombExplosion;
         internal static GameObject IceBomb;
         internal static GameObject OverchargeShot2;
         internal static GameObject marianEnergyProj;
@@ -102,6 +103,9 @@ namespace MarianMod.Modules
             //GrappleSprite = Assets.LoadEffect("GrappleSprite");
             GrappleSprite = mainAssetBundle.LoadAsset<GameObject>("GrappleSprite");
             MissileSprite = mainAssetBundle.LoadAsset<GameObject>("MissileSprite");
+            iceBombExplosion = Assets.LoadEffect("IceGrenade");
+            iceBombExplosion.GetComponent<EffectComponent>().soundName = "Play_engi_seekerMissile_explode";
+
 
             if (bombExplosionEffect)
             {

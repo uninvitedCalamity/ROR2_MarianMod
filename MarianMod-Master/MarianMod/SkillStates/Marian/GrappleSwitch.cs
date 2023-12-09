@@ -254,11 +254,11 @@ namespace MarianMod.SkillStates
 
         public void recolourRenderer(GameObject uiCom, float percent1, bool outOfBounds = false)
         {
-            float minvar = 0.5f;
+            float minvar = 2f;
             if (outOfBounds)
-                minvar = 2;
+                minvar = 0;
             SpriteRenderer renderer = uiCom.GetComponent<SpriteRenderer>();
-            Color lerpedColor = Color.Lerp(Color.HSVToRGB(0.3f, 1, 0.8f), Color.HSVToRGB(0f, 1, minvar), percent1);
+            Color lerpedColor = Color.Lerp(Color.HSVToRGB(0.3f, 1, 0.85f), Color.HSVToRGB(0f, 1, minvar), percent1);
             renderer.material.color = lerpedColor;
         }
 

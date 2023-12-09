@@ -14,14 +14,12 @@
 
   <ItemGroup>
     <None Remove="marian" />
-    <None Remove="marian.manifest" />
     <None Remove="MarianBank.bnk" />
     <None Remove="Modules\Characters\Marian.cs~RF6221a098.TMP" />
   </ItemGroup>
 
   <ItemGroup>
     <EmbeddedResource Include="marian" />
-    <EmbeddedResource Include="marian.manifest" />
   </ItemGroup>
 
 	<ItemGroup>
