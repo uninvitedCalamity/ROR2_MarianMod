@@ -34,14 +34,24 @@ Out of range:
 Marian throws/fires an Ice bomb, freezing enemies for 12 seconds
 
 ## Known issues
-- Still uses Murath's missile explosion fx for ice bomb
 - Sometimes Grapple "UI" randomly appears
+- Marian can grapple onto herself
 
 ## Objectives
 - Mastery skin
 - New explosion fx for ice bomb
 - Alternate UI colours for Colour-blindness
 - Add Specific animations for Grapple and Icebomb
+
+## Version 1.0.5
+- Changed Icebomb proc, radius and recharge time (17 sec)
+- Removed Henry's throw bomb skill
+- Added Marian skills to states.cs
+- Adjusted animator, Gun is now effected by animations
+- Primary uses Base aimray origin for angle anf firepoint calc
+- Ice bomb now uses it's own Explosion effect
+- Grapple skill no-longer gets stuck if quick tapped
+- Primary now makes sound on other player's games
 
 ## Version 1.0.4
 - Taking off your shorts in the lobby nolonger causes index out of bounds error
