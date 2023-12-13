@@ -1,13 +1,29 @@
 ﻿using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
+using BepInEx.Configuration;
+using BepInEx;
 
 namespace MarianMod.Modules.Characters
 {
     internal class MarianItemDisplays : ItemDisplaysBase
     {
+        private static ConfigFile CustomConfigFile { get; set; }
+        public static ConfigEntry<int> MyConfigEntry { get; set; }
+        private int DisplaysEnabled = 1;
         protected override void SetItemDisplayRules(List<ItemDisplayRuleSet.KeyAssetRuleGroup> itemDisplayRules)
         {
+            CustomConfigFile = new ConfigFile(Paths.ConfigPath + "\\Marian.cfg", true);
+            MyConfigEntry = CustomConfigFile.Bind<int>(
+                "DisplaySection",
+                "DisplayItems, default 1: Set to 1 for True, 0 for False",
+                1,
+                "Set to 1 for True, 0 for False"
+                );
+            DisplaysEnabled = MyConfigEntry.Value;
+
+            if (DisplaysEnabled != 1)
+                return;
             //paste all your displays here
             //sotv item displays not added yet. you can add them yourself from DLC1Content if you like. I believe in ya
             #region Item Displays
@@ -1265,28 +1281,6 @@ localScale = new Vector3(0.54615F, 0.54615F, 0.54615F),
 }
                 }
             });
-
-            itemDisplayRules.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
-            {
-                keyAsset = DLC1Content.Items.GoldOnHurt,
-                displayRuleGroup = new DisplayRuleGroup
-                {
-                    rules = new ItemDisplayRule[]
-{
-                        new ItemDisplayRule
-                        {
-                            ruleType = ItemDisplayRuleType.ParentedPrefab,
-                            followerPrefab = ItemDisplays.LoadDisplay("DisplayRollOfPennies"),
-childName = "FirePoint",
-localPos = new Vector3(0F, 0.22619F, 0F),
-localAngles = new Vector3(90F, 0F, 0F),
-localScale = new Vector3(1.18605F, 1.18605F, 1.18605F),
-                            limbMask = LimbFlags.None
-                        }
-}
-                }
-            });
-
 
             itemDisplayRules.Add(new ItemDisplayRuleSet.KeyAssetRuleGroup
             {

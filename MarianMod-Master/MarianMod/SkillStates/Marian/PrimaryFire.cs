@@ -45,6 +45,12 @@ namespace MarianMod.SkillStates
             base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
 
             impactFlash = EntityStates.Commando.CommandoWeapon.FireBarrage.hitEffectPrefab;
+            string text = "MissilePoint";
+
+            if (EntityStates.GolemMonster.FireLaser.effectPrefab)
+            {
+                EffectManager.SimpleMuzzleFlash(EntityStates.Engi.EngiWeapon.FireGrenades.effectPrefab, base.gameObject, text, false);
+            }
         }
 
         public void ScatterFire(Vector3 newDir)
@@ -63,12 +69,6 @@ namespace MarianMod.SkillStates
             Fire2(/*locator.FindChild("FirePoint").position*/base.GetAimRay().origin, Range, newDir);
             #region DrawOnly Ray
             Transform modelTransform = base.GetModelTransform();
-            string text = "MuzzleLaser";
-
-            if (EntityStates.GolemMonster.FireLaser.effectPrefab)
-            {
-                EffectManager.SimpleMuzzleFlash(EntityStates.GolemMonster.FireLaser.effectPrefab, base.gameObject, text, false);
-            }
             #endregion
 
             //Log.Debug("End------------------------------------------");
@@ -96,7 +96,7 @@ namespace MarianMod.SkillStates
                 maxSpread = 0f,
                 isCrit = base.RollCrit(),
                 owner = base.gameObject,
-                muzzleName = "FirePoint",
+                muzzleName = "MissilePoint",
                 smartCollision = false,
                 procChainMask = default(ProcChainMask),
                 procCoefficient = 1 / (float)projectileCount,

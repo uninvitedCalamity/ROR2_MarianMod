@@ -186,7 +186,7 @@ namespace MarianMod.Modules.Survivors
                 skillDescriptionToken = prefix + "GRAPPLESWITCH_DESCRIPTION",
                 skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("GrappleInitIcon"),
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.GrappleSwitch)),
-                activationStateMachineName = "Slide",
+                activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
                 baseRechargeInterval = 4f,
                 beginSkillCooldownOnSkillEnd = true,

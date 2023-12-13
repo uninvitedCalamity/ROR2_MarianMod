@@ -12,7 +12,8 @@ namespace MarianMod.Modules
 
             string desc = "Marian shoots people.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Smart missile barrage will try to evenly distribute missiles between enemies on screen." + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > Grappling hook Changes your primary skill to a grappling hook, releasing skill 1 or pressing skill 3 ends Grappling hook";
+            desc = desc + "< ! > Grappling hook Changes your primary skill to a grappling hook, releasing skill 1 or pressing skill 3 ends Grappling hook" + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > Jumping while ingrappling hook gives you a increases your velocity and boosts you upward"; 
 
             string outro = "..and so she left, reminded of that one time...";
             string outroFailure = "..if we call Minos Prime Pinos, doesn't that make Sisyphus Prime Pisyphus?";
@@ -35,7 +36,7 @@ namespace MarianMod.Modules
             LanguageAPI.Add(prefix + "PASSIVE_DESCRIPTION", "Sample text.");
 
             LanguageAPI.Add(prefix + "SCATTERGUN", "Scatter gun");
-            LanguageAPI.Add(prefix + "SCATTERGUN_DESCRIPTION", $"Fire 5 bullets for <style=cIsDamage>{100f * MarianMod.SkillStates.PrimaryFire.DamageCoef}% damage</style> each, full auto.");
+            LanguageAPI.Add(prefix + "SCATTERGUN_DESCRIPTION", $"Fire 5 bullets for <style=cIsDamage>5*{100f * MarianMod.SkillStates.PrimaryFire.DamageCoef}% damage</style> each, full auto.");
             #endregion
 
             #region Primary
@@ -48,7 +49,7 @@ namespace MarianMod.Modules
             LanguageAPI.Add(prefix + "SECONDARY_GUN_DESCRIPTION", Helpers.agilePrefix + $"Fire a handgun for <style=cIsDamage>{100f * StaticValues.gunDamageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "ICEBOMB", "Ice bomb");
-            LanguageAPI.Add(prefix + "ICEBOMB_DESCRIPTION", $"Fire a grenade, freezing enemies for <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef}% damage</style> over {2 * MarianMod.Modules.Projectiles.iceProc}.");
+            LanguageAPI.Add(prefix + "ICEBOMB_DESCRIPTION", $"Throw a grenade, freezing enemies for <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef}% damage</style> over {2 * MarianMod.Modules.Projectiles.iceProc} seconds.");
             #endregion
 
             #region Utility
@@ -64,7 +65,7 @@ namespace MarianMod.Modules
             LanguageAPI.Add(prefix + "SPECIAL_BOMB_DESCRIPTION", $"Throw a bomb for <style=cIsDamage>{100f * StaticValues.bombDamageCoefficient}% damage</style>.");
 
             LanguageAPI.Add(prefix + "MISSILES", "Smart missile barrage");
-            LanguageAPI.Add(prefix + "MISSILE_DESCRIPTION", $"Fire 5 missiles for <style=cIsDamage>{100f * MarianMod.SkillStates.MarianFlare.DamageCoef}% damage</style> afflicting Blight.");
+            LanguageAPI.Add(prefix + "MISSILE_DESCRIPTION", $"Fire 5 missiles for <style=cIsDamage>5*{100f * MarianMod.SkillStates.MarianFlare.DamageCoef}% damage</style> afflicting Blight.");
             #endregion
 
             #region Achievements

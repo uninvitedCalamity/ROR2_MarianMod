@@ -10,7 +10,7 @@ namespace MarianMod.Modules.CustomScripts
     {
         public void Start()
         {          
-            Util.PlaySound(EntityStates.GolemMonster.FireLaser.attackSoundString, this.gameObject);
+            Util.PlaySound(EntityStates.Commando.CommandoWeapon.FireBarrage.fireBarrageSoundString, this.gameObject);
         }
     }
 }

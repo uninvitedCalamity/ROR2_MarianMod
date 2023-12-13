@@ -29,11 +29,29 @@ namespace MarianMod.SkillStates
         const float scale = 0.25f;
         Vector3 BaseScale = new Vector3(scale, scale, scale);
         bool shrink = false;
+        Color defaultClose = Color.HSVToRGB(0.3f, 1, 0.85f);
+        Color defaultFar = Color.HSVToRGB(0f, 1, 2);
+        bool outOfRange = false;
+        bool LowerGun = false;
+        bool Inbounds = false;
+        bool animating = false;
+        bool skill3released = false;
+
+
+        public void exitAnimation()
+        {
+            if(!Inbounds || LowerGun)
+                base.PlayAnimation("GrappleUpperbody", "GrappleReadyV2Return");
+            else
+                base.PlayAnimation("GrappleUpperbody", "Empty");
+        }
 
 
         public override void OnEnter()
         {
             base.OnEnter();
+            base.GetComponent<MarianMod.Modules.CharacterDataStore>().kicked = false;
+            base.GetComponent<MarianMod.Modules.CharacterDataStore>().exitSwitch = false;
             //Change skill 1 to Grapple
             primaryOverride = Modules.Skills.CreateSkillDef(new Modules.SkillDefInfo
             {
@@ -69,17 +87,54 @@ namespace MarianMod.SkillStates
             }
             //Log.Debug("OverriddenSkill");
             Camera = GameObject.Find("Main Camera(Clone)");
-            if (Target == null && !m1Pressed)
-                Target = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.GrappleSprite, Camera.transform.position, Quaternion.identity).transform;
-            Target.transform.parent = Camera.transform;
-            Target.transform.rotation = Camera.transform.rotation;
-            Target.transform.localScale = BaseScale * Size;
-            Target.localPosition = new Vector3(0, 0, 0.05f); // <- make this change based on how close the hit point is to the max distance.
+            if (base.isAuthority)
+            {
+                if (Target == null && !m1Pressed)
+                    Target = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.GrappleSprite, Camera.transform.position, Quaternion.identity).transform;
+                Target.transform.parent = Camera.transform;
+                Target.transform.rotation = Camera.transform.rotation;
+                Target.transform.localScale = BaseScale * Size;
+                Target.localPosition = new Vector3(0, 0, 0.05f); // <- make this change based on how close the hit point is to the max distance.
+            }
+            base.PlayAnimation("GrappleUpperbody", "GrappleReadyV2Enter");
+            int CBM = base.GetComponent<MarianMod.Modules.CharacterDataStore>().ColourBlindMode;
+            Log.Debug("ColourBlind mode = " + CBM);
+            switch (CBM)
+            {
+                case 1:
+                    //Red=green
+                    //Blue to Red
+                    defaultClose = Color.HSVToRGB(0.6f, 1, 0.85f) ;
+                    defaultFar = Color.HSVToRGB(1, 1, 1);
+                    break;
+                case 2:
+                    //Blue-yellow
+                    //Blue to Green
+                    defaultClose = Color.HSVToRGB(0.6f, 1, 0.85f);
+                    defaultFar = Color.HSVToRGB(0.3f, 1, 1);
+                    break;
+            }
         }
 
+        float exitDelayTimer = 0;
+        float exitDelay = 0.5f;
+        bool pro = false;
+        public void exitdelay()
+        {
+            if (!pro)
+            {
+                exitAnimation();
+                pro = true;
+            }
+            if (exitDelayTimer >= exitDelay && Size <= 0)
+            {
+                releaseGui();
+                outer.SetNextStateToMain();
+            }
+            exitDelayTimer += Time.fixedDeltaTime;
+        }
         public override void OnExit()
         {
-            releaseGui();
             CrosshairUtils.OverrideRequest overrideRequest = this.crosshairOverrideRequest;
             if (overrideRequest != null)
             {
@@ -91,6 +146,8 @@ namespace MarianMod.SkillStates
                 overrideRequest.Dispose();
             }
             //Log.Debug("Skill Unassigned");
+            if(!base.isAuthority)
+                base.PlayAnimation("GrappleUpperbody", "GrappleReadyV2Return");
             base.OnExit();
         }
 
@@ -101,7 +158,6 @@ namespace MarianMod.SkillStates
 
         public void releaseGui()
         {
-            
             if (Target != null)
             {
                 Destroy(Target.gameObject);
@@ -114,26 +170,68 @@ namespace MarianMod.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+
+            if (base.inputBank.skill1.justReleased || base.inputBank.jump.justPressed)
+                if (m1Pressed)
+                {
+                    EXIT = true;
+                    shrink = true;
+                    if (!animating)
+                    {
+                        exitAnimation();
+                        animating = true;
+                    }
+                }
+            if (base.inputBank.skill1.justPressed)
+            {
+                m1Pressed = true;
+                shrink = true;
+            }
+            if (base.inputBank.skill3.justReleased)
+                skill3Released = true;
+            if (skill3Released)
+                if (base.inputBank.skill3.justPressed)
+                {
+                    EXIT = true;
+                    LowerGun = true;
+                    //base.PlayAnimation("GrappleUpperbody", "GrappleReadyV2Return");
+                }
+            if (base.GetComponent<MarianMod.Modules.CharacterDataStore>().kicked)
+            {
+                EXIT = true;
+            }
+            if (base.GetComponent<MarianMod.Modules.CharacterDataStore>().exitSwitch)
+            {
+                EXIT = true;
+                LowerGun = true;
+            }
+
+            if (shrink)
+            {
+                Size = Mathf.Clamp(Size - (Time.fixedDeltaTime * (1 / 0.3f)), 0, 1);
+            }
+            base.characterBody.SetAimTimer(2f);
+
+            if(base.isAuthority && Target != null)
+                Target.transform.localScale = BaseScale * Size;
+
+            if (!shrink)
+                Size = Mathf.Clamp(Size + (Time.deltaTime * (1 / 0.3f)), 0, 1);
+            if (EXIT)
+            {
+                shrink = true;
+                exitdelay();
+                if (base.isAuthority)
+                    UnAssign();
+                return;
+            }
             if (!base.isAuthority)
                 return;
-
-            Target.transform.localScale = BaseScale * Size;
-            if(!shrink)
-                Size = Mathf.Clamp(Size + (Time.deltaTime * (1/0.3f)),0,1);
-
             RaycastHit raycastHit;
             BaseRay = base.GetAimRay();
             BaseRay.origin += (BaseRay.direction * 0.5f);
             if (Physics.Raycast(this.BaseRay, out raycastHit, Mathf.Infinity, LayerIndex.world.mask | LayerIndex.defaultLayer.mask | LayerIndex.entityPrecise.mask))
             {
-                CrosshairUtils.OverrideRequest overrideRequest = this.crosshairOverrideRequest;
-                if(overrideRequest == null && !m1Pressed)
-                    if (EntityStates.Engi.EngiMissilePainter.Paint.crosshairOverridePrefab)
-                    {
-                        //this.crosshairOverrideRequest = CrosshairUtils.RequestOverrideForBody(base.characterBody, EntityStates.Huntress.AimArrowSnipe.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Skill);
-                        //this.crosshairOverrideRequestSprint = CrosshairUtils.RequestOverrideForBody(base.characterBody, EntityStates.Engi.EngiMissilePainter.Paint.crosshairOverridePrefab, CrosshairUtils.OverridePriority.Sprint);
-                    }
-
                 HitPoint = raycastHit.point;
 
                 //:) Put the GUI Cheesingm at the start and end of this ability
@@ -162,6 +260,8 @@ namespace MarianMod.SkillStates
                         //SpriteRenderer renderer = uiCom.GetComponent<SpriteRenderer>();
                         //Color lerpedColor = Color.Lerp(Color.HSVToRGB(0.3f, 1, 1), Color.HSVToRGB(0, 1, 1), percent1);
                         //renderer.material.color = lerpedColor;
+                        if (!m1Pressed)
+                            Inbounds = true;
                     }
                     else
                     {
@@ -183,8 +283,6 @@ namespace MarianMod.SkillStates
                         recolourRenderer(Target.transform.GetChild(4).gameObject, 1, true);
                     }
                 }
-
-                overrideRequest = this.crosshairOverrideRequestSprint;
             }
             else
             {
@@ -203,62 +301,21 @@ namespace MarianMod.SkillStates
                     recolourRenderer(Target.transform.GetChild(2).gameObject, 1, true);
                     recolourRenderer(Target.transform.GetChild(3).gameObject, 1, true);
                     recolourRenderer(Target.transform.GetChild(4).gameObject, 1, true);
+
+                    outOfRange = true;
                 }
                 //releaseGui();
             }
-
-            //if (m1Pressed)
-                //releaseGui();       
-
-            if (shrink)
-            {
-                Size = Mathf.Clamp(Size - (Time.fixedDeltaTime * (1 / 0.3f)), 0, 1);
-            }
-
-            if (EXIT && !TimerAssigned)
-            {
-                timeAtExit = base.fixedAge;
-                TimerAssigned = true;
-            }
-            if (TimerAssigned)
-            {
-                if (base.fixedAge >= timeAtExit + timer && Size <= 0)
-                    outer.SetNextStateToMain();
-            }
-
-            if (base.inputBank.skill1.justReleased)
-                if (m1Pressed)
-                {
-                    EXIT = true;
-                    shrink = true;
-                }
-            if (base.inputBank.skill1.justPressed)
-            {
-                m1Pressed = true;
-                shrink = true;
-            }
-            if (base.fixedAge > duration)
-                if (base.inputBank.skill3.justPressed)
-                {
-                    shrink = true;
-                    EXIT = true;
-                }
-
-            if (EXIT)
-            {
-                shrink = true;
-                UnAssign();
-            }
-
         }
 
         public void recolourRenderer(GameObject uiCom, float percent1, bool outOfBounds = false)
         {
             float minvar = 2f;
+            Color lerpedColor = Color.Lerp(defaultClose, defaultFar, percent1);
             if (outOfBounds)
-                minvar = 0;
+                lerpedColor = Color.Lerp(defaultClose, Color.HSVToRGB(0f, 1, minvar), percent1);
             SpriteRenderer renderer = uiCom.GetComponent<SpriteRenderer>();
-            Color lerpedColor = Color.Lerp(Color.HSVToRGB(0.3f, 1, 0.85f), Color.HSVToRGB(0f, 1, minvar), percent1);
+
             renderer.material.color = lerpedColor;
         }
 

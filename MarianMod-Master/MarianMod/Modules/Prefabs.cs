@@ -3,6 +3,8 @@ using RoR2;
 using System.Collections.Generic;
 using UnityEngine;
 using MarianMod.Modules.Characters;
+using BepInEx.Configuration;
+using BepInEx;
 
 namespace MarianMod.Modules {
     // module for creating body prefabs and whatnot
@@ -134,12 +136,28 @@ namespace MarianMod.Modules {
 
         #region ModelSetup
 
+        private static ConfigFile CustomConfigFile { get; set; }
+        public static ConfigEntry<int> MyConfigEntry { get; set; }
+
         private static Transform AddCharacterModelToSurvivorBody(GameObject bodyPrefab, Transform modelTransform, BodyInfo bodyInfo) 
         {
             for (int i = bodyPrefab.transform.childCount - 1; i >= 0; i--) {
 
                 Object.DestroyImmediate(bodyPrefab.transform.GetChild(i).gameObject);
             }
+
+            CustomConfigFile = new ConfigFile(Paths.ConfigPath + "\\com-uninvitedCalamity-Marian.cfg", true);
+            MyConfigEntry = CustomConfigFile.Bind<int>(
+                "ColourBlindness Section",
+                "ColourBlindMode, default 0: set to 1 for Red-Green Blindness, 2 for Blue-Yellow Blindness",
+                0,
+                "Set to 1 for Red-Green, 0 for Blue-Yellow"
+                );
+
+            Log.Debug("Adding CharacterDataStore");
+            CharacterDataStore cD = bodyPrefab.AddComponent<MarianMod.Modules.CharacterDataStore>();
+            Log.Debug("Assigning colourblind mode");
+            cD.ColourBlindMode = MyConfigEntry.Value;
 
             Transform modelBase = new GameObject("ModelBase").transform;
             modelBase.parent = bodyPrefab.transform;

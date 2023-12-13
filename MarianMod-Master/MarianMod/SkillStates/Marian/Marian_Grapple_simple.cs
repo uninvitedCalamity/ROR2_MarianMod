@@ -35,6 +35,9 @@ namespace MarianMod.SkillStates
         bool hasHealthComponent;
         bool enteredCollision = false;
         Vector3 pos = Vector3.zero;
+        bool failed = false;
+        bool animationEnded = false;
+        int anim = 0;
 
         public bool upwardSearch(GameObject observing, bool searching)
         {
@@ -74,7 +77,6 @@ namespace MarianMod.SkillStates
             BaseRay = base.GetAimRay();
             RaycastHit raycastHit;
             float num = distance;
-            base.characterMotor.Motor.ForceUnground();
             this.modelTransform = base.GetModelTransform();
             this.locator = modelTransform.GetComponent<ChildLocator>();
             BaseRay.origin += (BaseRay.direction * 0.5f);
@@ -83,6 +85,7 @@ namespace MarianMod.SkillStates
             GrapplePos = grapple.localPosition;
             if (Physics.Raycast(this.BaseRay, out raycastHit, num, LayerIndex.world.mask | LayerIndex.defaultLayer.mask | LayerIndex.entityPrecise.mask))
             {
+                base.characterMotor.Motor.ForceUnground();
                 vector = raycastHit.point;
                 Log.Debug(raycastHit.collider.name);
                 targetPoint = raycastHit.collider.transform;
@@ -91,45 +94,65 @@ namespace MarianMod.SkillStates
                 EffectManager.SimpleEffect(EntityStates.GolemMonster.FireLaser.hitEffectPrefab, raycastHit.point, new Quaternion(0, 0, 0, 0), true);
                 grapple.position = hitPoint;
                 hasHealthComponent = upwardSearch(raycastHit.collider.gameObject, true);
+                Log.Debug("Start GrappleAnim");
             }
             else
             {
+                Log.Debug("Out of range");
+                failed = true;
+                anim = 2;
                 outer.SetNextStateToMain();
             }
-            Log.Debug("Start GrappleAnim");
+            if (targetPoint == null)
+            {
+                failed = true;
+                anim = 2;
+                outer.SetNextStateToMain();
+            }
             //base.PlayAnimation("Grapple", "Grapple", "Grapple.playbackRate", 1);
-            if(!hasAnimated)
-                base.PlayAnimation("Grapple", "Grapple");
-            hasAnimated = true;
 
         }
 
+        public void exitAnim(int anim)
+        {
+            if(anim == 1)
+                base.PlayAnimation("Grapple", "GrappleToKick");
+            else if (anim == 0)
+                base.PlayAnimation("Grapple", "TestState");            
+        }
         public override void OnExit()
         {
             if (jump)
-                base.characterMotor.velocity *= 1.15f;
+            {
+                if(base.isAuthority)
+                    base.characterMotor.velocity *= 1.15f;
+            }
             else if (hasHealthComponent && enteredCollision)
             {
-                Vector3 Overrride = -base.characterMotor.velocity * 0.5f;
-                Overrride.y = 14;
-                base.characterMotor.velocity = Overrride;
-                new BlastAttack
+                anim = 1;
+                base.GetComponent<MarianMod.Modules.CharacterDataStore>().kicked = true;
+                if (base.isAuthority)
                 {
-                    attacker = base.gameObject,
-                    inflictor = base.gameObject,
-                    teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
-                    baseDamage = damageCoef * base.damageStat,
-                    baseForce = 0.5f * 0.2f,
-                    position = grapple.position,
-                    radius = 3,
-                    falloffModel = BlastAttack.FalloffModel.SweetSpot,
-                    damageType = DamageType.Stun1s,
-                }.Fire();
+                    Vector3 Overrride = -base.characterMotor.velocity * 0.5f;
+                    Overrride.y = 14;
+                    base.characterMotor.velocity = Overrride;
+                    new BlastAttack
+                    {
+                        attacker = base.gameObject,
+                        inflictor = base.gameObject,
+                        teamIndex = TeamComponent.GetObjectTeam(base.gameObject),
+                        baseDamage = damageCoef * base.damageStat,
+                        baseForce = 0.5f * 0.2f,
+                        position = grapple.position,
+                        radius = 3,
+                        falloffModel = BlastAttack.FalloffModel.SweetSpot,
+                        damageType = DamageType.Stun1s,
+                    }.Fire();
+                }
                 EffectManager.SimpleEffect(EntityStates.GolemMonster.FireLaser.hitEffectPrefab, grapple.position, new Quaternion(0, 0, 0, 0), true);
             }
             grapple.localPosition = GrapplePos;
-            if (hasAnimated)
-                base.PlayAnimation("Grapple", "TestState");
+            exitAnim(anim);
             base.OnExit();
         }
 
@@ -140,11 +163,6 @@ namespace MarianMod.SkillStates
                 outer.SetNextStateToMain();
                 return;
             }
-
-            if(targetPoint != null)
-                pos = targetPoint.TransformPoint(targetOffset);
-
-            grapple.position = pos;
 
             if (base.fixedAge < delay)
                 return;
@@ -167,6 +185,11 @@ namespace MarianMod.SkillStates
 
             if (targetPoint != null)
             {
+                if (!hasAnimated)
+                {
+                    base.PlayAnimation("Grapple", "Jump3To GrappleStart");
+                    hasAnimated = true;
+                }
                 base.characterMotor.Motor.ForceUnground();
 
                 Vector3 direction = base.transform.position - pos;
@@ -197,9 +220,31 @@ namespace MarianMod.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            if (targetPoint != null)
+                pos = targetPoint.TransformPoint(targetOffset);
+            else
+            {
+                outer.SetNextStateToMain();
+                return;
+            }
+            grapple.position = pos;
+            if (targetPoint != null && !base.isAuthority)
+            {
+                if (!hasAnimated)
+                {
+                    base.PlayAnimation("Grapple", "Jump3To GrappleStart");
+                    hasAnimated = true;
+                }
+            }
+            if (targetPoint == null)
+            {
+                base.GetComponent<MarianMod.Modules.CharacterDataStore>().exitSwitch = true;
+                outer.SetNextStateToMain();
+                return;
+            }
             if (base.isAuthority)
             {
-                //base.PlayAnimation("Grapple", "PermGrapple");
+                base.characterBody.SetAimTimer(2f);
                 maxVelocity = defaultMax * (base.moveSpeedStat);
                 swingGrapple();
             }

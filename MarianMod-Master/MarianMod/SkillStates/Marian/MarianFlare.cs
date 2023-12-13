@@ -63,6 +63,7 @@ namespace MarianMod.SkillStates
             missileDelay /= base.attackSpeedStat;
             Camera = GameObject.Find("Main Camera(Clone)");
             //missileCount = (int)(missileCount * Mathf.Clamp(base.attackSpeedStat / 2,1,20));
+
         }
 
         public void ScatterFire(Vector3 newDir)
@@ -79,12 +80,6 @@ namespace MarianMod.SkillStates
             currentCount++;
             #region DrawOnly Ray
             Transform modelTransform = base.GetModelTransform();
-            string text = "MuzzleLaser";
-
-            if (EntityStates.GolemMonster.FireLaser.effectPrefab)
-            {
-                EffectManager.SimpleMuzzleFlash(EntityStates.GolemMonster.FireLaser.effectPrefab, base.gameObject, text, false);
-            }
             #endregion
 
             //Log.Debug("End------------------------------------------");
@@ -242,14 +237,16 @@ namespace MarianMod.SkillStates
                     {
                         Targets[TargetCount] = hurtBox.transform;
 
-                        if (indicators[TargetCount] == null)
+                        if (base.isAuthority)
                         {
-                            Quaternion LR = Quaternion.LookRotation((hurtBox.transform.position - BaseRay.origin).normalized);
-                            indicators[TargetCount] = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.MissileSprite, hurtBox.transform.position, LR).transform;
-                            indicators[TargetCount].localScale = new Vector3(1, 1, 1);
-                            indicators[TargetCount].LookAt(BaseRay.origin);
+                            if (indicators[TargetCount] == null)
+                            {
+                                Quaternion LR = Quaternion.LookRotation((hurtBox.transform.position - BaseRay.origin).normalized);
+                                indicators[TargetCount] = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.MissileSprite, hurtBox.transform.position, LR).transform;
+                                indicators[TargetCount].localScale = new Vector3(1, 1, 1);
+                                indicators[TargetCount].LookAt(BaseRay.origin);
+                            }
                         }
-
                         TargetCount++;                      
                     }
                 }
@@ -292,7 +289,7 @@ namespace MarianMod.SkillStates
                 }
             }
         }
-
+        bool Refunded = false;
         public void Fire(Vector3 newDir)
         {
             GameObject Missile = Modules.Projectiles.Missile;
@@ -304,12 +301,13 @@ namespace MarianMod.SkillStates
             }
             if (onTarget >= TargetCount)
                 onTarget = 0;
-            
-            if(Target != null)
+
+            if (Target != null)
+            {
                 MissileUtils.FireMissile(
-                    locator.FindChild("MissilePoint").position, 
-                    base.characterBody, 
-                    default(ProcChainMask), 
+                    locator.FindChild("MissilePoint").position,
+                    base.characterBody,
+                    default(ProcChainMask),
                     Target.gameObject,
                     this.damageStat * DamageCoef,
                     base.RollCrit(),
@@ -318,17 +316,35 @@ namespace MarianMod.SkillStates
                     newDir,
                     0f,
                     false);
-            else            
-                ProjectileManager.instance.FireProjectile(Missile,
-                    locator.FindChild("MissilePoint").position,
-                    Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
-                    base.gameObject,
-                    4f * base.damageStat,
-                    0f,
-                    base.RollCrit(),
-                    DamageColorIndex.Default,
-                    null);
-            
+
+                string text = "MissilePoint";
+
+                if (EntityStates.GolemMonster.FireLaser.effectPrefab)
+                {
+                    EffectManager.SimpleMuzzleFlash(EntityStates.Engi.EngiWeapon.FireGrenades.effectPrefab, base.gameObject, text, true);
+                }
+            }
+            else
+            {
+                if (!Refunded)
+                {
+                    Refunded = true;
+                    if (base.activatorSkillSlot.stock < base.activatorSkillSlot.maxStock)
+                        base.activatorSkillSlot.AddOneStock();
+                    EffectManager.SimpleMuzzleFlash(EntityStates.EngiTurret.EngiTurretWeapon.FireGauss.effectPrefab, base.gameObject, "MissilePoint", true);
+                }
+            }
+            /*Vector3 initialDirection, float force, bool addMissileProc)
+            ProjectileManager.instance.FireProjectile(Missile,
+                locator.FindChild("MissilePoint").position,
+                Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
+                base.gameObject,
+                4f * base.damageStat,
+                0f,
+                base.RollCrit(),
+                DamageColorIndex.Default,
+                null);*/
+
         }
         float counter = 0;
         float timer = 0;

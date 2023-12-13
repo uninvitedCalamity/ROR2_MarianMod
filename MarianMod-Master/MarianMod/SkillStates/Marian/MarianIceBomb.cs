@@ -29,8 +29,8 @@ namespace MarianMod.SkillStates
         public override void OnEnter()
         {
             base.OnEnter();
-            this.duration = baseDuration / this.attackSpeedStat;
-            this.windUp = windup / base.attackSpeedStat;
+            this.duration = baseDuration;
+            this.windUp = windup;
 
             base.characterBody.SetAimTimer(2f);
             this.animator = base.GetModelAnimator();
@@ -39,10 +39,10 @@ namespace MarianMod.SkillStates
 
             Icebomb = Modules.Projectiles.IceBomb;
 
-            base.PlayAnimation("Gesture, Override", "ShootGun", "ShootGun.playbackRate", this.duration);
+            //base.PlayAnimation("Gesture, Override", "ShootGun", "ShootGun.playbackRate", this.duration);
             float firerate = (1 / windUp) * base.attackSpeedStat;
             //animator.SetFloat("Firerate", firerate);
-            base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
+            //base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
         }
 
         public void ScatterFire(Vector3 newDir)
@@ -86,6 +86,7 @@ namespace MarianMod.SkillStates
             if (!hasFired)
             {
                 hasReleased = true;
+                this.hasFired = true;
                 //Util.PlaySound("PheonixBombThrow", base.gameObject);
                 base_desired_speed *= (Mathf.Clamp(base.fixedAge / windup, 0, max_multiplier));
                 Ray aimRay = base.GetAimRay();
@@ -106,7 +107,6 @@ namespace MarianMod.SkillStates
                 while (currentCount < 5);
                 */
                 this.ScatterFire(newDir);
-                this.hasFired = true;
             }
         }
         bool released = false;
@@ -114,6 +114,12 @@ namespace MarianMod.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            if (base.fixedAge >= windUp && !hasFired)
+            {
+                base.PlayAnimation("Gesture, Override", "ThrowBomb");
+                if(!base.isAuthority)
+                    hasFired = true;
+            }
             if (base.isAuthority)
             {
                 if(!hasFired && base.fixedAge >= windup)

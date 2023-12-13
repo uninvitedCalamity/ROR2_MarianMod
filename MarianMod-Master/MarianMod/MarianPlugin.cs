@@ -1,4 +1,5 @@
 ﻿using BepInEx;
+using BepInEx.Configuration;
 using MarianMod.Modules.Survivors;
 using R2API.Utils;
 using RoR2;
@@ -14,7 +15,7 @@ namespace MarianMod
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.0.5")]
+    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.0.8")]
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [R2APISubmoduleDependency(new string[]
     {
@@ -31,15 +32,34 @@ namespace MarianMod
         //   this shouldn't even have to be said
         public const string MODUID = "com.uninvitedcalamity.MarianMod";
         public const string MODNAME = "UninvitedCalamity_MarianMod";
-        public const string MODVERSION = "1.0.5";
+        public const string MODVERSION = "1.0.8";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "UninvitedCalamity";
 
         public static MarianPlugin instance;
+        private static ConfigFile CustomConfigFile { get; set; }
+        public static ConfigEntry<int> MyConfigEntry { get; set; }
+        public static ConfigEntry<int> MySecondConfigEntry { get; set; }
+
+        private int DisplaysEnabled = 1;
 
         private void Awake()
         {
+            CustomConfigFile = new ConfigFile(Paths.ConfigPath + "\\com-uninvitedCalamity-Marian.cfg", true);
+            MyConfigEntry = CustomConfigFile.Bind<int>(
+                "ColourBlindness Section",
+                "ColourBlindMode, default 0: set to 1 for Red-Green Blindness, 2 for Blue-Yellow Blindness",
+                0,
+                "1 for Red-Green Blindness, 2 for Blue-Yellow Blindness"
+                );
+            MyConfigEntry = CustomConfigFile.Bind<int>(
+                "DisplaySection",
+                "DisplayItems, default 1: Set to 1 for True, 0 for False",
+                1,
+                "Set to 1 for True, 0 for False"
+                );
+
             if (BepInEx.Bootstrap.Chainloader.PluginInfos.ContainsKey("com.johnedwa.RTAutoSprintEx"))
             {
                 SendMessage("RT_SprintDisableMessage", "MarianMod.SkillStates.PrimaryFire");
