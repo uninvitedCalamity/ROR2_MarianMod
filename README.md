@@ -2,6 +2,7 @@
 
 Adds Marian to ROR2, a cyborg snake lady.
 Multiplayer compatible, if you have any feedback please @ me (uninvitedCalamity) on the ROR2 modding discord or dm me at uninvitedCalamity#1334.
+Colour blindness UI modifiers added, please let me know they're not good enough.
 
 ![Lobby](https://raw.githubusercontent.com/uninvitedCalamity/ROR2_MarianMod/main/Images/20231204190434_1.jpg?token=GHSAT0AAAAAACLFR6QDVL6CULB2GEYSHXSKZLOFUIQ)
 
@@ -31,17 +32,43 @@ Out of range:
 ![OutOfRange](https://github.com/uninvitedCalamity/ROR2_MarianMod/blob/main/Images/20231204195618_1.jpg)
 
 ### Ice bomb
-Marian throws/fires an Ice bomb, freezing enemies for 12 seconds
+Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
 
 ## Known issues
-- Sometimes Grapple "UI" randomly appears
+- Grapple "UI" appears when Goobu jr's use Grapple.
 - Marian can grapple onto herself
+- Config does not show description of colour blindnessmode/Display value, put in value name instead
+- Missile UI appears on other players screens
+- When using sturdy mug, client player gets infinite grenades at 10 stacks
 
 ## Objectives
 - Mastery skin
-- New explosion fx for ice bomb
-- Alternate UI colours for Colour-blindness
-- Add Specific animations for Grapple and Icebomb
+- Create custom muzzle flash
+- Maybe set up the mod for emotes???
+
+## Version 1.0.9
+- Icebomb is no longer infinite with sturdy mug on client, however no longer functions.
+
+## Version 1.0.8
+- Missiles restock if there are no enemies to target, does not fire
+- Grapple animation for switch ends before player can fire
+- Changed sound of Icebomb Detonation
+- Removed commended aim Override request from Grapple switch code
+- Muzzle flashes appear on gun
+- Animations are networked sort of, The Grapple switch exit animation doesn't 100% lineup but whatevs
+- Added seconds to grenade description
+
+## Version 1.0.7
+- Grapple switch ends after kicking an enemy, or when attempting to grapple outside grapple range.
+
+## Version 1.0.6
+- Added animations for Grapple and Icebomb
+- Icebomb speed no longer effected by attackspeed
+- Added toggle for item displays in config
+- Added Config settings for Colour blindness
+- Updated descriptions for primary and secondary to show 5*<damage>
+- Updated parenting of Roll of pennies
+- Can now fire immediately out of jumping in Grapple
 
 ## Version 1.0.5
 - Changed Icebomb proc, radius and recharge time (17 sec)
