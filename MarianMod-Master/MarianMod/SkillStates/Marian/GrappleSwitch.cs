@@ -135,15 +135,13 @@ namespace MarianMod.SkillStates
         }
         public override void OnExit()
         {
-            CrosshairUtils.OverrideRequest overrideRequest = this.crosshairOverrideRequest;
-            if (overrideRequest != null)
+            if (Size >= 0)
             {
-                overrideRequest.Dispose();
-            }
-            overrideRequest = this.crosshairOverrideRequestSprint;
-            if (overrideRequest != null)
-            {
-                overrideRequest.Dispose();
+                Inbounds = true;
+                LowerGun = false;
+                exitAnimation();
+                releaseGui();
+                UnAssign();
             }
             //Log.Debug("Skill Unassigned");
             if(!base.isAuthority)
@@ -303,6 +301,11 @@ namespace MarianMod.SkillStates
                     recolourRenderer(Target.transform.GetChild(4).gameObject, 1, true);
 
                     outOfRange = true;
+                    if (m1Pressed)
+                    {
+                        Inbounds = false;
+                        EXIT = true;
+                    }
                 }
                 //releaseGui();
             }
@@ -321,7 +324,7 @@ namespace MarianMod.SkillStates
 
         public override InterruptPriority GetMinimumInterruptPriority()
         {
-            return InterruptPriority.Pain;
+            return InterruptPriority.Frozen;
         }
 
         private void TryOverrideSkill(GenericSkill skill)

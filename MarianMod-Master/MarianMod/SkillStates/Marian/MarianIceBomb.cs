@@ -4,6 +4,7 @@ using RoR2.Skills;
 using UnityEngine;
 using RoR2.Projectile;
 using System.Collections.Generic;
+using System;
 
 namespace MarianMod.SkillStates
 {
@@ -54,7 +55,7 @@ namespace MarianMod.SkillStates
             currentCount++;
 
 
-            newDir += new Vector3(Random.Range(-var, var), Random.Range(-var, var), Random.Range(-var, var));
+            newDir += new Vector3(UnityEngine.Random.Range(-var, var), UnityEngine.Random.Range(-var, var), UnityEngine.Random.Range(-var, var));
             newDir = newDir.normalized;
             //Log.Debug("Start-----------------------------------------");
             this.Fire(newDir);
@@ -69,16 +70,23 @@ namespace MarianMod.SkillStates
 
         public void Fire(Vector3 newDir)
         {
-            //bombPrefab.GetComponent<ProjectileSimple>().desiredForwardSpeed = base_desired_speed;
-            ProjectileManager.instance.FireProjectile(this.Icebomb,
-                locator.FindChild("FirePoint").position,
-                Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
-                base.gameObject,
-                DamageCoef * base.damageStat,
-                0f,
-                base.RollCrit(),
-                DamageColorIndex.Default,
-                null);
+            try
+            {
+                //bombPrefab.GetComponent<ProjectileSimple>().desiredForwardSpeed = base_desired_speed;
+                ProjectileManager.instance.FireProjectile(this.Icebomb,
+                    locator.FindChild("FirePoint").position,
+                    Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
+                    base.gameObject,
+                    DamageCoef * base.damageStat,
+                    0f,
+                    base.RollCrit(),
+                    DamageColorIndex.Default,
+                    null);
+            }
+            catch (NullReferenceException e)
+            {
+                Log.Debug(e);
+            }
         }
 
         public void StartFire()
@@ -96,16 +104,12 @@ namespace MarianMod.SkillStates
                 //newDir += Vector3.up / 20;
                 scatter = 0;
 
-                newDir += new Vector3(Random.Range(-scatter, scatter), Random.Range(-scatter, scatter), Random.Range(-scatter, scatter));
+                newDir += new Vector3(UnityEngine.Random.Range(-scatter, scatter), UnityEngine.Random.Range(-scatter, scatter), UnityEngine.Random.Range(-scatter, scatter));
                 newDir = newDir - base.gameObject.transform.position;
                 newDir = newDir.normalized;
                 if (!base.characterMotor.isGrounded)
                     base.characterMotor.velocity += -newDir * Mathf.Clamp(base.fixedAge / windup, 0, max_multiplier);
-                /*
-                do
-                { ScatterFire(newDir); }
-                while (currentCount < 5);
-                */
+
                 this.ScatterFire(newDir);
             }
         }
