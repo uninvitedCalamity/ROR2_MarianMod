@@ -38,13 +38,21 @@ Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
 - Grapple "UI" appears when Goobu jr's use Grapple.
 - Marian can grapple onto herself
 - Config does not show description of colour blindnessmode/Display value, put in value name instead
-- Missile UI appears on other players screens
-- When using sturdy mug, client player gets infinite grenades at 10 stacks
 
 ## Objectives
 - Mastery skin
 - Create custom muzzle flash
 - Maybe set up the mod for emotes???
+
+## Version 1.0.12
+- Grapple switch exits when skill 1 held and out of range
+- Adjusted animation layers and Gun parent to allow bending up and down when aiming grapple
+
+## Version 1.0.11
+- No longer double plays exit animation when attempting to grapple out of range or exiting manually
+
+## Version 1.0.10
+- Marian no longer gets stuck in grapple state when frozen
 
 ## Version 1.0.9
 - Icebomb is no longer infinite with sturdy mug on client, however no longer functions.
@@ -104,3 +112,5 @@ Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
 - Lodington for the Cheats for testing and sinai-dev for Unity explorer.
 - HIFU for informing me of the one line needed to fix the icebomb issue.
 - Kessmonster for telling me about the auto-run issues.
+- James for telling me about issues with Tinkers satchel.
+- stevarian for telling me about the grapple stuck on freeze glitch.
