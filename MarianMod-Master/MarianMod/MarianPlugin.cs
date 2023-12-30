@@ -15,7 +15,7 @@ namespace MarianMod
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.0.12")]
+    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.1.0")]
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [R2APISubmoduleDependency(new string[]
     {
@@ -32,7 +32,7 @@ namespace MarianMod
         //   this shouldn't even have to be said
         public const string MODUID = "com.uninvitedcalamity.MarianMod";
         public const string MODNAME = "UninvitedCalamity_MarianMod";
-        public const string MODVERSION = "1.0.12";
+        public const string MODVERSION = "1.1.0";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "UninvitedCalamity";
@@ -100,10 +100,12 @@ namespace MarianMod
             // a simple stat hook, adds armor after stats are recalculated
             if (self)
             {
+                /*
                 if (self.HasBuff(Modules.Buffs.armorBuff))
                 {
                     self.armor += 300f;
                 }
+                */
             }
         }
     }

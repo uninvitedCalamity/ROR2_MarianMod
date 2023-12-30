@@ -40,8 +40,12 @@ namespace MarianMod.SkillStates
 
         public void exitAnimation()
         {
-            if(!Inbounds || LowerGun)
+            if (!Inbounds || LowerGun)
+            {
                 base.PlayAnimation("GrappleUpperbody", "GrappleReadyV2Return");
+                if (base.activatorSkillSlot.stock < base.activatorSkillSlot.maxStock)
+                    base.activatorSkillSlot.AddOneStock();
+            }
             else
                 base.PlayAnimation("GrappleUpperbody", "Empty");
         }

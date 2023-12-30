@@ -5,6 +5,8 @@ using RoR2.Skills;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using R2API;
+using MarianMod.Achievements;
 
 namespace MarianMod.Modules.Survivors
 {
@@ -74,8 +76,25 @@ namespace MarianMod.Modules.Survivors
                 {
                     childName = "Grapples",
                     material = Materials.CreateHopooMaterial("Bra"),
+                },
+                new CustomRendererInfo
+                {
+                    childName = "MBody",
+                    material = Materials.CreateHopooMaterial("MasteryBody"),
+                },
+                new CustomRendererInfo
+                {
+                    childName = "MGun",
+                    material = Materials.CreateHopooMaterial("MasteryGun"),
+                },
+                new CustomRendererInfo
+                {
+                    childName = "MBra",
+                    material = Materials.CreateHopooMaterial("MasteryBody"),
                 }
         };
+
+
 
         public override UnlockableDef characterUnlockableDef => null;
 
@@ -96,7 +115,7 @@ namespace MarianMod.Modules.Survivors
         public override void InitializeUnlockables()
         {
             //uncomment this when you have a mastery skin. when you do, make sure you have an icon too
-            //masterySkinUnlockableDef = Modules.Unlockables.AddUnlockable<Modules.Achievements.MasteryAchievement>();
+            masterySkinUnlockableDef = Modules.MarianUnlockables.MarianMasteryUnlockableDef;
         }
 
         public override void InitializeHitboxes()
@@ -161,7 +180,7 @@ namespace MarianMod.Modules.Survivors
                 activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.MarianIceBomb)),
                 activationStateMachineName = "Weapon",
                 baseMaxStock = 1,
-                baseRechargeInterval = 17f,
+                baseRechargeInterval = 13f,
                 beginSkillCooldownOnSkillEnd = false,
                 canceledFromSprinting = false,
                 forceSprintDuringState = false,
@@ -271,6 +290,8 @@ namespace MarianMod.Modules.Survivors
             ModelSkinController skinController = model.AddComponent<ModelSkinController>();
             ChildLocator childLocator = model.GetComponent<ChildLocator>();
 
+            SkinnedMeshRenderer mainRenderer = characterModel.mainSkinnedMeshRenderer;
+
             CharacterModel.RendererInfo[] defaultRendererinfos = characterModel.baseRendererInfos;
             Log.Debug("Render infos count = " + defaultRendererinfos.Length);
 
@@ -291,6 +312,18 @@ namespace MarianMod.Modules.Survivors
             //    "meshMarianGun",
             //    "meshMarian");
 
+            defaultSkin.meshReplacements = Modules.Skins.getMeshReplacements(defaultRendererinfos,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null);
+
             //add new skindef to our list of skindefs. this is what we'll be passing to the SkinController
             skins.Add(defaultSkin);
             
@@ -302,7 +335,10 @@ namespace MarianMod.Modules.Survivors
             Log.Debug("MeshRaplacements");
             NoPantV2.meshReplacements = Modules.Skins.getMeshReplacements(defaultRendererinfos,
                 null,
-                null,//no gun mesh replacement. use same gun mesh
+                null,
+                null,
+                null,
+                null,
                 null,
                 null,
                 null,
@@ -334,6 +370,66 @@ namespace MarianMod.Modules.Survivors
 
             //uncomment this when you have a mastery skin
             #region MasterySkin
+
+            SkinDef Mastery = Modules.Skins.CreateSkinDef(Marian_PREFIX + "MASTERY_SKIN_NAME",
+                Assets.mainAssetBundle.LoadAsset<Sprite>("texMasterySkin"),
+                defaultRendererinfos,
+                model,
+                UnlockableAPI.AddUnlockable<MarianMasteryAchievement>());
+
+            Log.Debug("MasteryAchievement name = " + Mastery.unlockableDef.cachedName);
+
+            Log.Debug("MeshRaplacements");
+            Mastery.meshReplacements = Modules.Skins.getMeshReplacements(defaultRendererinfos,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                null,
+                "MasteryBody",
+                "MasteryGun",
+                "MasteryRobotics");
+            
+
+            Log.Debug("Deactivating RegularSkin");
+            Mastery.gameObjectActivations = new SkinDef.GameObjectActivation[]
+            {
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("Body").gameObject,
+                    shouldActivate = false,
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("Legs").gameObject,
+                    shouldActivate = false,
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("Mouth").gameObject,
+                    shouldActivate = false,
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("Shorts").gameObject,
+                    shouldActivate = false,
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("Robotics").gameObject,
+                    shouldActivate = false,
+                },
+                new SkinDef.GameObjectActivation
+                {
+                    gameObject = childLocator.FindChild("MechaBra").gameObject,
+                    shouldActivate = false,
+                }
+            };
+
+            skins.Add(Mastery);
+
             /*
             //creating a new skindef as we did before
             SkinDef masterySkin = Modules.Skins.CreateSkinDef(MarianPlugin.DEVELOPER_PREFIX + "_Marian_BODY_MASTERY_SKIN_NAME",

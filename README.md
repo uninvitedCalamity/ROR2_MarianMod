@@ -44,6 +44,13 @@ Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
 - Create custom muzzle flash
 - Maybe set up the mod for emotes???
 
+## Version 1.1.0
+- Added mastery skin, Model and rig had to be re-imported for all skins, if there are any issues let me know
+- Changed Icebomb cool down to 13 seconds
+- Grapple switch restores stock on cancel or miss
+- Smart missile increases missiles over time while it is targeting enemies, up to 50
+- Smart missile Targeting ui is smaller
+
 ## Version 1.0.12
 - Grapple switch exits when skill 1 held and out of range
 - Adjusted animation layers and Gun parent to allow bending up and down when aiming grapple

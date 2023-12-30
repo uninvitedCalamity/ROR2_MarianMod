@@ -11,7 +11,7 @@ namespace MarianMod.Modules
 
         internal static void RegisterBuffs()
         {
-            armorBuff = AddNewBuff("MarianArmorBuff", RoR2.LegacyResourcesAPI.Load<Sprite>("Textures/BuffIcons/texBuffGenericShield"), Color.white, false, false);
+            armorBuff = AddNewBuff("MarianMissileCountBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("MissileIcon"), Color.white, true, false);
         }
 
         // simple helper method

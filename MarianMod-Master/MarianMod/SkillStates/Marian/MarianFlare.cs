@@ -30,14 +30,16 @@ namespace MarianMod.SkillStates
         int missileCount = 5;
         int TargetCount;
         int onTarget = 0;
-        Transform[] Targets = new Transform[5];
+        Transform[] Targets = new Transform[50];
         Transform Target;
         Ray AimRayCopy;
         static public float DamageCoef = 2.5f;
         float targetRefresh = 0.1f;
-        Transform[] indicators = new Transform[5];
+        Transform[] indicators = new Transform[50];
         GameObject Camera;
         float Range = 150;
+        float IterDelay = 1f;
+        float IterTimer = 0;
 
         public override void OnEnter()
         {
@@ -68,7 +70,7 @@ namespace MarianMod.SkillStates
 
         public void ScatterFire(Vector3 newDir)
         {
-
+            Log.Debug("EnterScatterFire");
             float var = 0.04f;
             if (currentCount == 0)
                 var = 0;
@@ -267,7 +269,7 @@ namespace MarianMod.SkillStates
                     renderer.material.color = Color.HSVToRGB(0.3f, 1, 1);
                     TargetObject.position = currentTargetObject;
                     TargetObject.LookAt(Camera.transform.position);
-                    TargetObject.localScale = new Vector3(0.002f, 0.002f, 0.002f) / Mathf.Clamp(Distance* 0.01f,0.1f,Range);
+                    TargetObject.localScale = new Vector3(0.0005f, 0.0005f, 0.0005f) / Mathf.Clamp(Distance* 0.01f,0.1f,Range);
                 }
             }
             else
@@ -292,20 +294,29 @@ namespace MarianMod.SkillStates
         bool Refunded = false;
         public void Fire(Vector3 newDir)
         {
+            Log.Debug("EnterFire");
             GameObject Missile = Modules.Projectiles.Missile;
+            Log.Debug("GotMissile");
             base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
+            Log.Debug("PlayedAnim");
             if (Targets[onTarget] != null)
             {
+                Log.Debug("GettingTarget");
                 Target = Targets[onTarget];// nijhoqefw.transform;
                 onTarget++;
+            }
+            else
+            {
+                Log.Debug("Targets[onTarget] is null");
             }
             if (onTarget >= TargetCount)
                 onTarget = 0;
 
             if (Target != null)
             {
+                Log.Debug("Firing Target");
                 MissileUtils.FireMissile(
-                    locator.FindChild("MissilePoint").position,
+                    locator.FindChild("FirePoint").position,
                     base.characterBody,
                     default(ProcChainMask),
                     Target.gameObject,
@@ -317,15 +328,16 @@ namespace MarianMod.SkillStates
                     0f,
                     false);
 
-                string text = "MissilePoint";
+                string text = "FirePoint";
 
-                if (EntityStates.GolemMonster.FireLaser.effectPrefab)
+                if (EntityStates.Engi.EngiWeapon.FireGrenades.effectPrefab)
                 {
                     EffectManager.SimpleMuzzleFlash(EntityStates.Engi.EngiWeapon.FireGrenades.effectPrefab, base.gameObject, text, true);
                 }
             }
             else
             {
+                Log.Debug("NothingFound, Refunded");
                 if (!Refunded)
                 {
                     Refunded = true;
@@ -334,17 +346,6 @@ namespace MarianMod.SkillStates
                     EffectManager.SimpleMuzzleFlash(EntityStates.EngiTurret.EngiTurretWeapon.FireGauss.effectPrefab, base.gameObject, "MissilePoint", true);
                 }
             }
-            /*Vector3 initialDirection, float force, bool addMissileProc)
-            ProjectileManager.instance.FireProjectile(Missile,
-                locator.FindChild("MissilePoint").position,
-                Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
-                base.gameObject,
-                4f * base.damageStat,
-                0f,
-                base.RollCrit(),
-                DamageColorIndex.Default,
-                null);*/
-
         }
         float counter = 0;
         float timer = 0;
@@ -361,21 +362,15 @@ namespace MarianMod.SkillStates
                         indicators[i].position = Targets[i].position;
                 }
             }
-            if (timer >= targetRefresh && !hasReleased)
-            {
-                TargetCount = 0;
-                GetCurrentTargetInfo();
-                timer = 0;
-            }
-            timer += Time.fixedDeltaTime;
-            if (base.inputBank.skill2.justReleased && !hasReleased)
-                hasReleased = true;
             if (base.isAuthority)
             {
+                Log.Debug("Is base Authority");
                 if (base.fixedAge >= windup)
-                {                    
+                {
+                    Log.Debug("Base.FixedAge is good enough");
                     if (hasReleased)
                     {
+                        Log.Debug("Has released");
                         //Log.Debug("In Firing Cycle");
                         //Util.PlaySound("PheonixBombThrow", base.gameObject);
 
@@ -389,8 +384,9 @@ namespace MarianMod.SkillStates
                         newDir = newDir - base.gameObject.transform.position;
                         newDir = newDir.normalized;
 
-                        if (counter >= missileDelay)
+                        if (counter >= missileDelay || !Refunded)
                         {
+                            Log.Debug("currentCount = " + currentCount);
                             if (currentCount < missileCount)
                                 ScatterFire(newDir);
                             counter = 0;
@@ -398,10 +394,36 @@ namespace MarianMod.SkillStates
 
                         counter += Time.fixedDeltaTime;
                     }
-                }                    
-                if (base.fixedAge >= duration && currentCount >= missileCount)
+                    else
+                    {
+                        if (IterTimer >= IterDelay / base.attackSpeedStat && TargetCount >= 1)
+                        {
+                            base.characterBody.ClearTimedBuffs(Modules.Buffs.armorBuff);
+                            missileCount = Mathf.Clamp(missileCount + 1, 5, Targets.Length);
+                            IterTimer = 0;
+                            for (int i = 0; i < missileCount; i++)
+                                base.characterBody.AddTimedBuff(Modules.Buffs.armorBuff, IterDelay / base.attackSpeedStat);
+                        }
+                        else if (TargetCount <= 0)
+                            missileCount = 5;
+                        IterTimer += Time.fixedDeltaTime;
+                    }
+                }
+                if (base.fixedAge >= duration && (currentCount >= missileCount || Refunded))
+                {
                     outer.SetNextStateToMain();
+                    return;
+                }
             }
+            if (timer >= targetRefresh && !hasReleased)
+            {
+                TargetCount = 0;
+                GetCurrentTargetInfo();
+                timer = 0;
+            }
+            timer += Time.fixedDeltaTime;
+            if (!base.inputBank.skill2.down && !hasReleased)
+                hasReleased = true;
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
@@ -426,6 +448,7 @@ namespace MarianMod.SkillStates
                 }
                 indicators[i] = null;
             }
+            base.characterBody.ClearTimedBuffs(Modules.Buffs.armorBuff);
             base.OnExit();
         }
     }
