@@ -56,6 +56,7 @@ namespace MarianMod.SkillStates
             base.OnEnter();
             base.GetComponent<MarianMod.Modules.CharacterDataStore>().kicked = false;
             base.GetComponent<MarianMod.Modules.CharacterDataStore>().exitSwitch = false;
+            BaseScale *= base.GetComponent<MarianMod.Modules.CharacterDataStore>().UIScale;
             //Change skill 1 to Grapple
             primaryOverride = Modules.Skills.CreateSkillDef(new Modules.SkillDefInfo
             {
@@ -91,7 +92,7 @@ namespace MarianMod.SkillStates
             }
             //Log.Debug("OverriddenSkill");
             Camera = GameObject.Find("Main Camera(Clone)");
-            if (base.isAuthority)
+            if (base.isAuthority && base.characterBody.isPlayerControlled)
             {
                 if (Target == null && !m1Pressed)
                     Target = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.GrappleSprite, Camera.transform.position, Quaternion.identity).transform;

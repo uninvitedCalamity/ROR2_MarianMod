@@ -10,5 +10,6 @@ namespace MarianMod.Modules
         public int ColourBlindMode = 0;
         public bool kicked = false;
         public bool exitSwitch = false;
+        public float UIScale = 1;
     }
 }

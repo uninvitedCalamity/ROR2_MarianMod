@@ -24,6 +24,8 @@ namespace MarianMod.Modules
         internal static GameObject marianEnergyProj;
         internal static GameObject GrappleSprite;
         internal static GameObject MissileSprite;
+        internal static GameObject MissileChargePing;
+        internal static GameObject MissileChargePing2;
 
         // networked hit sounds
         internal static NetworkSoundEventDef swordHitSoundEvent;
@@ -105,6 +107,8 @@ namespace MarianMod.Modules
             MissileSprite = mainAssetBundle.LoadAsset<GameObject>("MissileSprite");
             iceBombExplosion = Assets.LoadEffect("IceGrenade");
             iceBombExplosion.GetComponent<EffectComponent>().soundName = "Play_engi_seekerMissile_explode";
+            MissileChargePing = Assets.LoadEffect("MarianPing1");
+            MissileChargePing2 = Assets.LoadEffect("MarianPing2");
 
 
             if (bombExplosionEffect)

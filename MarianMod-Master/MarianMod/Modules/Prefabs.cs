@@ -158,6 +158,13 @@ namespace MarianMod.Modules {
             CharacterDataStore cD = bodyPrefab.AddComponent<MarianMod.Modules.CharacterDataStore>();
             Log.Debug("Assigning colourblind mode");
             cD.ColourBlindMode = MyConfigEntry.Value;
+            MyConfigEntry = CustomConfigFile.Bind<int>(
+                "UIScale Section",
+                "UIScale, Default is 100",
+                100,
+                ""
+                );
+            cD.UIScale = (float)(MyConfigEntry.Value) / 100;
 
             Transform modelBase = new GameObject("ModelBase").transform;
             modelBase.parent = bodyPrefab.transform;

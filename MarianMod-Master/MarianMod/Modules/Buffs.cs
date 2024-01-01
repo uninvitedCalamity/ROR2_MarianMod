@@ -7,11 +7,11 @@ namespace MarianMod.Modules
     public static class Buffs
     {
         // armor buff gained during roll
-        internal static BuffDef armorBuff;
+        internal static BuffDef MissileBuff;
 
         internal static void RegisterBuffs()
         {
-            armorBuff = AddNewBuff("MarianMissileCountBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("MissileIcon"), Color.white, true, false);
+            MissileBuff = AddNewBuff("MarianMissileCountBuff", Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("MissileIcon"), Color.white, true, false);
         }
 
         // simple helper method

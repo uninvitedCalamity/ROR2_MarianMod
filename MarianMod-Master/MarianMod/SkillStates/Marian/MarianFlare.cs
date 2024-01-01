@@ -38,8 +38,12 @@ namespace MarianMod.SkillStates
         Transform[] indicators = new Transform[50];
         GameObject Camera;
         float Range = 150;
-        float IterDelay = 1f;
+        float IterDelay = 1.5f;
         float IterTimer = 0;
+        int charge = 1;
+        int pingCount = 0;
+        GameObject Ping;
+        GameObject Ping2;
 
         public override void OnEnter()
         {
@@ -64,6 +68,8 @@ namespace MarianMod.SkillStates
             GetCurrentTargetInfo();
             missileDelay /= base.attackSpeedStat;
             Camera = GameObject.Find("Main Camera(Clone)");
+            Ping = Modules.Assets.MissileChargePing;
+            Ping2 = Modules.Assets.MissileChargePing2;
             //missileCount = (int)(missileCount * Mathf.Clamp(base.attackSpeedStat / 2,1,20));
 
         }
@@ -239,7 +245,7 @@ namespace MarianMod.SkillStates
                     {
                         Targets[TargetCount] = hurtBox.transform;
 
-                        if (base.isAuthority)
+                        if (base.isAuthority && base.characterBody.isPlayerControlled)
                         {
                             if (indicators[TargetCount] == null)
                             {
@@ -263,13 +269,24 @@ namespace MarianMod.SkillStates
                 float Distance = Vector3.Distance(FarPosition, Camera.transform.position);
                 float percent = 0.1f / Distance;
                 Vector3 currentTargetObject = (Camera.transform.position * (1 - percent)) + (FarPosition * (percent));
+
+                Vector3 Difference = Camera.transform.position - FarPosition;
+                Vector3 Direction = Difference.normalized;
+                Vector3 MaxSize = new Vector3(0.002f, 0.002f, 0.002f) * base.GetComponent<MarianMod.Modules.CharacterDataStore>().UIScale;
+                Vector3 MinSize = new Vector3(0.001f, 0.001f, 0.001f) * base.GetComponent<MarianMod.Modules.CharacterDataStore>().UIScale;
+                float RangePercent = Distance / Range;
+
                 if (TargetObject != null)
                 {
                     SpriteRenderer renderer = TargetObject.GetChild(0).gameObject.GetComponent<SpriteRenderer>();
                     renderer.material.color = Color.HSVToRGB(0.3f, 1, 1);
                     TargetObject.position = currentTargetObject;
+                    //TargetObject.position = FarPosition;
                     TargetObject.LookAt(Camera.transform.position);
-                    TargetObject.localScale = new Vector3(0.0005f, 0.0005f, 0.0005f) / Mathf.Clamp(Distance* 0.01f,0.1f,Range);
+                    //TargetObject.localScale = new Vector3(0.0005f, 0.0005f, 0.0005f) / Mathf.Clamp(Distance* 0.01f,0.2f,Range);
+                    Vector3 L = MaxSize * (1 - RangePercent);
+                    Vector3 M = MinSize * RangePercent;
+                    TargetObject.localScale = L + M;
                 }
             }
             else
@@ -398,16 +415,35 @@ namespace MarianMod.SkillStates
                     {
                         if (IterTimer >= IterDelay / base.attackSpeedStat && TargetCount >= 1)
                         {
-                            base.characterBody.ClearTimedBuffs(Modules.Buffs.armorBuff);
-                            missileCount = Mathf.Clamp(missileCount + 1, 5, Targets.Length);
+                            base.characterBody.ClearTimedBuffs(Modules.Buffs.MissileBuff);
+                            if (charge < 3)
+                            {
+                                pingCount = 0;
+                                missileCount = Mathf.Clamp(missileCount + 3, 5, Targets.Length);
+                            }
                             IterTimer = 0;
                             for (int i = 0; i < missileCount; i++)
-                                base.characterBody.AddTimedBuff(Modules.Buffs.armorBuff, IterDelay / base.attackSpeedStat);
+                                base.characterBody.AddTimedBuff(Modules.Buffs.MissileBuff, IterDelay / base.attackSpeedStat);
+                            charge += 1;
                         }
                         else if (TargetCount <= 0)
+                        {
                             missileCount = 5;
+                            charge = 1;
+                            pingCount = 0;
+                            IterTimer = 0;
+                        }
                         IterTimer += Time.fixedDeltaTime;
                     }
+                }
+                if (pingCount < charge && TargetCount > 0)
+                {
+                    pingCount = charge;
+                    EffectManager.SimpleEffect(Ping, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
+                    if (charge == 3)
+                        EffectManager.SimpleEffect(Ping2, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
+                        for (int i = 0; i < 3; i++)
+                            Util.PlaySound(EntityStates.Engi.EngiMissilePainter.Paint.enterSoundString, locator.FindChild("MissilePoint").gameObject);
                 }
                 if (base.fixedAge >= duration && (currentCount >= missileCount || Refunded))
                 {
@@ -448,7 +484,7 @@ namespace MarianMod.SkillStates
                 }
                 indicators[i] = null;
             }
-            base.characterBody.ClearTimedBuffs(Modules.Buffs.armorBuff);
+            base.characterBody.ClearTimedBuffs(Modules.Buffs.MissileBuff);
             base.OnExit();
         }
     }

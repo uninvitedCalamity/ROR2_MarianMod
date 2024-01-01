@@ -11,7 +11,7 @@ namespace MarianMod.Modules
             string prefix = MarianPlugin.DEVELOPER_PREFIX + "_Marian_BODY_";
 
             string desc = "Marian shoots people.<color=#CCD3E0>" + Environment.NewLine + Environment.NewLine;
-            desc = desc + "< ! > Smart missile barrage will try to evenly distribute missiles between enemies on screen." + Environment.NewLine + Environment.NewLine;
+            desc = desc + "< ! > Smart missile barrage will try to evenly distribute missiles between enemies on screen. Smart missile barrage will increase targeting count and missile count while held and targeting enemies" + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Grappling hook Changes your primary skill to a grappling hook, releasing skill 1 or pressing skill 3 ends Grappling hook" + Environment.NewLine + Environment.NewLine;
             desc = desc + "< ! > Jumping while ingrappling hook gives you a increases your velocity and boosts you upward"; 
 
