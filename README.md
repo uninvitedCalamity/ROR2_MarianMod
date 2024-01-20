@@ -35,14 +35,40 @@ Out of range:
 Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
 
 ## Known issues
-- Grapple "UI" appears when Goobu jr's use Grapple.
-- Marian can grapple onto herself
 - Config does not show description of colour blindnessmode/Display value, put in value name instead
+- Grapple does not automatically cancel on miss if the raycast finds something
 
 ## Objectives
-- Mastery skin
-- Create custom muzzle flash
 - Maybe set up the mod for emotes???
+
+## Version 1.2.2
+- Poison bomb and Icemissiles were not overiting damage type on client, now overite used projectile
+
+## Version 1.2.1
+- Added alt Grenade and Missiles
+- Re-added shapekey anims for blinking and flinching
+- Changed Grapple UI
+
+## Version 1.2.0
+- Smart missile ping stops pinging after third charge, until targets are lost
+- Smart missile Timing fixed and adjusted
+- Smart missile Buff managed entirely by player, Client or Host, by spawning an additional projectile that manages how much of the buff should be active
+- Changed charge effects, different one for each stage
+- Removed logs from Smart missile
+- Grapple re-casts from hit point if it hits Marian
+- Grapple Auto exits and restocks if grapple is out of range but in raycast
+
+## Version 1.1.3
+- UI for Grapple and Missiles only instantiates on Player characters with base authority
+
+## Version 1.1.2
+- UI scaler was treating config values below 100 as 0
+
+## Version 1.1.1
+- Increased minimum size of smart missile UI, Interpolates between two set values-
+- Missiles charge in sets of three
+- Add UI scale option to Config
+- Mastery skin is darker
 
 ## Version 1.1.0
 - Added mastery skin, Model and rig had to be re-imported for all skins, if there are any issues let me know
@@ -119,5 +145,6 @@ Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
 - Lodington for the Cheats for testing and sinai-dev for Unity explorer.
 - HIFU for informing me of the one line needed to fix the icebomb issue.
 - Kessmonster for telling me about the auto-run issues.
-- James for telling me about issues with Tinkers satchel.
+- James for telling me about issues with Tinkers satchel, and pointing out how Glaring the Mastery skin's white is.
 - stevarian for telling me about the grapple stuck on freeze glitch.
+- drinksenoughcoffeetoascend for feedback on Grapple, Icebomb and Smart Missile.
