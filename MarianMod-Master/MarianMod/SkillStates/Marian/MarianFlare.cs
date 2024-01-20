@@ -5,26 +5,34 @@ using UnityEngine;
 using RoR2.Projectile;
 using System.Collections.Generic;
 using R2API;
+using UnityEngine.Networking;
 
 namespace MarianMod.SkillStates
 {
+    /*
+     * 			base.DoImpactAuthority();
+			BlastAttack.Result result = base.DetonateAuthority();
+			base.skillLocator.utility.RunRecharge((float)result.hitCount * ChainableLeap.refundPerHit);
+    */
+
     class MarianFlare : BaseSkillState
     {
         ChildLocator locator;
         Transform modelTransform;
 
         float baseDuration = 0.25f;
+        float coolDown = 0.8f;
         float windup = 0.1f;
         float scatter = 0;
 
         private float duration;
         private float windUp;
         private float fireTime;
-        private bool hasFired;
+        private bool hasFired = false;
         private Animator animator;
         private bool hasReleased = false;
         GameObject bombPrefab;
-        float missileDelay = 0.08f; 
+        float missileDelay = 0.055f;
         public float currentCount = 0;
         BullseyeSearch search;
         int missileCount = 5;
@@ -38,12 +46,17 @@ namespace MarianMod.SkillStates
         Transform[] indicators = new Transform[50];
         GameObject Camera;
         float Range = 150;
-        float IterDelay = 1.5f;
+        float IterDelay = .9f;
         float IterTimer = 0;
         int charge = 1;
         int pingCount = 0;
         GameObject Ping;
         GameObject Ping2;
+        GameObject Ping3;
+        bool FinalPing = false;
+        bool CoolingDown = false;
+        int firingcount = 0;
+        GameObject Missile;
 
         public override void OnEnter()
         {
@@ -51,6 +64,9 @@ namespace MarianMod.SkillStates
             this.search = new BullseyeSearch();
             this.duration = baseDuration / this.attackSpeedStat;
             this.windUp = windup / base.attackSpeedStat;
+            missileDelay /= base.attackSpeedStat;
+            coolDown /= base.attackSpeedStat;
+            counter = missileDelay;
 
             this.fireTime = 0.35f * this.duration;
             base.characterBody.SetAimTimer(2f);
@@ -66,17 +82,24 @@ namespace MarianMod.SkillStates
 
             AimRayCopy = base.GetAimRay();
             GetCurrentTargetInfo();
-            missileDelay /= base.attackSpeedStat;
+
             Camera = GameObject.Find("Main Camera(Clone)");
+
             Ping = Modules.Assets.MissileChargePing;
             Ping2 = Modules.Assets.MissileChargePing2;
+            Ping3 = Modules.Assets.MissileChargePing3;
+            Missile = setProj();
             //missileCount = (int)(missileCount * Mathf.Clamp(base.attackSpeedStat / 2,1,20));
 
         }
 
+        public virtual GameObject setProj()
+        {
+            return Modules.Projectiles.Missile;
+        }
+
         public void ScatterFire(Vector3 newDir)
         {
-            Log.Debug("EnterScatterFire");
             float var = 0.04f;
             if (currentCount == 0)
                 var = 0;
@@ -85,7 +108,6 @@ namespace MarianMod.SkillStates
             newDir = newDir.normalized;
             //Log.Debug("Start-----------------------------------------");
             Fire(newDir);
-            currentCount++;
             #region DrawOnly Ray
             Transform modelTransform = base.GetModelTransform();
             #endregion
@@ -311,27 +333,20 @@ namespace MarianMod.SkillStates
         bool Refunded = false;
         public void Fire(Vector3 newDir)
         {
-            Log.Debug("EnterFire");
-            GameObject Missile = Modules.Projectiles.Missile;
-            Log.Debug("GotMissile");
             base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
-            Log.Debug("PlayedAnim");
             if (Targets[onTarget] != null)
             {
-                Log.Debug("GettingTarget");
                 Target = Targets[onTarget];// nijhoqefw.transform;
                 onTarget++;
             }
             else
             {
-                Log.Debug("Targets[onTarget] is null");
             }
             if (onTarget >= TargetCount)
                 onTarget = 0;
 
             if (Target != null)
             {
-                Log.Debug("Firing Target");
                 MissileUtils.FireMissile(
                     locator.FindChild("FirePoint").position,
                     base.characterBody,
@@ -351,10 +366,10 @@ namespace MarianMod.SkillStates
                 {
                     EffectManager.SimpleMuzzleFlash(EntityStates.Engi.EngiWeapon.FireGrenades.effectPrefab, base.gameObject, text, true);
                 }
+                currentCount++;
             }
             else
             {
-                Log.Debug("NothingFound, Refunded");
                 if (!Refunded)
                 {
                     Refunded = true;
@@ -370,24 +385,23 @@ namespace MarianMod.SkillStates
         {
             base.FixedUpdate();
             base.characterBody.SetAimTimer(2f);
-            for (int i = 0; i < indicators.Length; i++)
-            {
-                if (indicators[i] != null)
-                {
-                    indicators[i].LookAt(base.GetAimRay().origin);
-                    if (Targets[i] != null)
-                        indicators[i].position = Targets[i].position;
-                }
-            }
+            if (!base.inputBank.skill2.down && !hasReleased)
+                hasReleased = true;
             if (base.isAuthority)
             {
-                Log.Debug("Is base Authority");
+                for (int i = 0; i < indicators.Length; i++)
+                {
+                    if (indicators[i] != null)
+                    {
+                        indicators[i].LookAt(base.GetAimRay().origin);
+                        if (Targets[i] != null)
+                            indicators[i].position = Targets[i].position;
+                    }
+                }
                 if (base.fixedAge >= windup)
                 {
-                    Log.Debug("Base.FixedAge is good enough");
-                    if (hasReleased)
+                    if (hasReleased && !CoolingDown)
                     {
-                        Log.Debug("Has released");
                         //Log.Debug("In Firing Cycle");
                         //Util.PlaySound("PheonixBombThrow", base.gameObject);
 
@@ -401,65 +415,112 @@ namespace MarianMod.SkillStates
                         newDir = newDir - base.gameObject.transform.position;
                         newDir = newDir.normalized;
 
-                        if (counter >= missileDelay || !Refunded)
+
+                        if (counter >= missileDelay && !Refunded)
                         {
-                            Log.Debug("currentCount = " + currentCount);
                             if (currentCount < missileCount)
+                            {
                                 ScatterFire(newDir);
-                            counter = 0;
+                                ProjectileManager.instance.FireProjectile(Modules.Projectiles.AddMissiles,
+                                    locator.FindChild("FirePoint").position,
+                                    Util.QuaternionSafeLookRotation(Vector3.zero),//aimRay.direction),
+                                    base.gameObject,
+                                    missileCount - currentCount,
+                                    0f,
+                                    false,
+                                    DamageColorIndex.Default,
+                                    null);
+                            }
+                            if (!Refunded)
+                            {
+                                counter = 0;
+                                hasFired = true;
+                            }
                         }
+                        
 
                         counter += Time.fixedDeltaTime;
                     }
-                    else
-                    {
-                        if (IterTimer >= IterDelay / base.attackSpeedStat && TargetCount >= 1)
-                        {
-                            base.characterBody.ClearTimedBuffs(Modules.Buffs.MissileBuff);
-                            if (charge < 3)
-                            {
-                                pingCount = 0;
-                                missileCount = Mathf.Clamp(missileCount + 3, 5, Targets.Length);
-                            }
-                            IterTimer = 0;
-                            for (int i = 0; i < missileCount; i++)
-                                base.characterBody.AddTimedBuff(Modules.Buffs.MissileBuff, IterDelay / base.attackSpeedStat);
-                            charge += 1;
-                        }
-                        else if (TargetCount <= 0)
-                        {
-                            missileCount = 5;
-                            charge = 1;
-                            pingCount = 0;
-                            IterTimer = 0;
-                        }
-                        IterTimer += Time.fixedDeltaTime;
-                    }
                 }
-                if (pingCount < charge && TargetCount > 0)
+                if (!CoolingDown && (currentCount < missileCount && !Refunded))
                 {
-                    pingCount = charge;
-                    EffectManager.SimpleEffect(Ping, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
-                    if (charge == 3)
-                        EffectManager.SimpleEffect(Ping2, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
-                        for (int i = 0; i < 3; i++)
-                            Util.PlaySound(EntityStates.Engi.EngiMissilePainter.Paint.enterSoundString, locator.FindChild("MissilePoint").gameObject);
+                    duration = base.fixedAge + coolDown;
                 }
-                if (base.fixedAge >= duration && (currentCount >= missileCount || Refunded))
+                if (!CoolingDown)
+                {
+                    if (currentCount >= missileCount)
+                    {
+                        CoolingDown = true;
+                    }
+                    if (!hasReleased)
+                    {
+                        if (base.fixedAge >= windup)
+                        {
+
+                            if (IterTimer >= IterDelay / base.attackSpeedStat && TargetCount >= 1)
+                            {
+                                if (charge < 3)
+                                {
+                                    pingCount = 0;
+                                    if (base.isAuthority && !CoolingDown)
+                                        missileCount = Mathf.Clamp(missileCount + 3, 5, Targets.Length);
+                                }
+                                IterTimer = 0;
+                                charge += 1;
+                            }
+                            else if (TargetCount <= 0)
+                            {
+                                missileCount = 5;
+                                charge = 1;
+                                pingCount = 0;
+                                IterTimer = 0;
+                                FinalPing = false;
+                            }
+                            IterTimer += Time.fixedDeltaTime;
+
+                        }
+                        if (pingCount < charge && TargetCount > 0 && !FinalPing)
+                        {
+                            pingCount = charge;
+                            if (charge == 3)
+                            {
+                                FinalPing = true;
+                                EffectManager.SimpleEffect(Ping3, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
+                            }
+                            else if (charge == 2)
+                                EffectManager.SimpleEffect(Ping2, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
+                            else
+                                EffectManager.SimpleEffect(Ping, locator.FindChild("MissilePoint").transform.position, new Quaternion(0, 0, 0, 0), true);
+                        }
+                    }
+
+                }//!CoolingDown end
+                firingcount = (int)(missileCount - currentCount);
+                ProjectileManager.instance.FireProjectile(Modules.Projectiles.AddMissiles,
+                    Vector3.down * 100,
+                    Util.QuaternionSafeLookRotation(Vector3.down * 100),//aimRay.direction),
+                    base.gameObject,
+                    firingcount,
+                    0f,
+                    false,
+                    DamageColorIndex.Default,
+                    null);
+                if (base.fixedAge >= duration)
                 {
                     outer.SetNextStateToMain();
                     return;
                 }
+                if (timer >= targetRefresh && (!hasReleased))
+                {
+                    TargetCount = 0;
+                    GetCurrentTargetInfo();
+                    timer = 0;
+                }
+                timer += Time.fixedDeltaTime;
             }
-            if (timer >= targetRefresh && !hasReleased)
-            {
-                TargetCount = 0;
-                GetCurrentTargetInfo();
-                timer = 0;
-            }
-            timer += Time.fixedDeltaTime;
-            if (!base.inputBank.skill2.down && !hasReleased)
-                hasReleased = true;
+
+            #region Buffs and Pings
+            #endregion
         }
 
         public override InterruptPriority GetMinimumInterruptPriority()
@@ -484,6 +545,9 @@ namespace MarianMod.SkillStates
                 }
                 indicators[i] = null;
             }
+            if(base.isAuthority && !hasFired)
+                if (base.activatorSkillSlot.stock < base.activatorSkillSlot.maxStock)
+                    base.activatorSkillSlot.AddOneStock();
             base.characterBody.ClearTimedBuffs(Modules.Buffs.MissileBuff);
             base.OnExit();
         }

@@ -168,8 +168,8 @@ namespace MarianMod.SkillStates
             }
             
         }
-        float yOffset = 0.0275f;
-        float xOffset = 0.05f;
+        float yOffset = 0.0275f * 2.25f;
+        float xOffset = 0.05f * 1.5f;
         public override void FixedUpdate()
         {
             base.FixedUpdate();
@@ -284,6 +284,12 @@ namespace MarianMod.SkillStates
                         recolourRenderer(Target.transform.GetChild(2).gameObject, 1, true);
                         recolourRenderer(Target.transform.GetChild(3).gameObject, 1, true);
                         recolourRenderer(Target.transform.GetChild(4).gameObject, 1, true);
+                        if (m1Pressed)
+                        {
+                            Inbounds = false;
+                            LowerGun = true;
+                            EXIT = true;
+                        }
                     }
                 }
             }

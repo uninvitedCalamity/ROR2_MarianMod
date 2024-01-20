@@ -39,9 +39,10 @@ namespace MarianMod.SkillStates
         bool animationEnded = false;
         int anim = 0;
 
-        public bool upwardSearch(GameObject observing, bool searching)
+        public HealthComponent upwardSearch(GameObject observing, bool searching)
         {
             bool ChildFound = false;
+            HealthComponent returnable = null;
             do
             {
                 HurtBox h1;
@@ -49,6 +50,7 @@ namespace MarianMod.SkillStates
                 if (h = observing.GetComponent<HealthComponent>())
                 {
                     ChildFound = true;
+                    returnable = h;
                     searching = false;
                 }
                 else if (h1 = observing.GetComponent<HurtBox>())
@@ -56,6 +58,7 @@ namespace MarianMod.SkillStates
                     if (h1.healthComponent != null)
                     {
                         ChildFound = true;
+                        returnable = h1.healthComponent;
                         searching = false;
                     }
                 }
@@ -67,7 +70,7 @@ namespace MarianMod.SkillStates
                         searching = false;
                 }
             } while (searching);
-            return ChildFound;
+            return returnable;
         }
 
         public override void OnEnter()
@@ -90,11 +93,42 @@ namespace MarianMod.SkillStates
                 Log.Debug(raycastHit.collider.name);
                 targetPoint = raycastHit.collider.transform;
                 targetOffset = targetPoint.InverseTransformPoint(raycastHit.point);
-                hitPoint = raycastHit.point;
-                EffectManager.SimpleEffect(EntityStates.GolemMonster.FireLaser.hitEffectPrefab, raycastHit.point, new Quaternion(0, 0, 0, 0), true);
+                hitPoint = raycastHit.point;                
                 grapple.position = hitPoint;
-                hasHealthComponent = upwardSearch(raycastHit.collider.gameObject, true);
+                HealthComponent returned;
+                if (returned = upwardSearch(raycastHit.collider.gameObject, true))
+                {
+                    hasHealthComponent = true;
+                    if (returned.body == base.characterBody)
+                    {
+                        Log.Debug("Hit Marian");
+                        RaycastHit hit2;
+                        Vector3 recast = raycastHit.point + (this.BaseRay.direction * 0.5f);
+                        Ray ray2 = new Ray();
+                        ray2.origin = recast;
+                        ray2.direction = this.BaseRay.direction;
+
+                        if (Physics.Raycast(ray2, out hit2, num, LayerIndex.world.mask | LayerIndex.defaultLayer.mask | LayerIndex.entityPrecise.mask))
+                        {
+                            vector = hit2.point;
+                            Log.Debug(hit2.collider.name);
+                            targetPoint = hit2.collider.transform;
+                            targetOffset = targetPoint.InverseTransformPoint(hit2.point);
+                            hitPoint = hit2.point;
+                            //EffectManager.SimpleEffect(EntityStates.GolemMonster.FireLaser.hitEffectPrefab, hit2.point, new Quaternion(0, 0, 0, 0), true);
+                            grapple.position = hitPoint;
+                            if (returned = upwardSearch(hit2.collider.gameObject, true))
+                            {
+                                hasHealthComponent = true;
+                            }
+                        }
+                    }
+
+                }
+                else
+                    hasHealthComponent = false;
                 Log.Debug("Start GrappleAnim");
+                EffectManager.SimpleEffect(EntityStates.GolemMonster.FireLaser.hitEffectPrefab, hitPoint, new Quaternion(0, 0, 0, 0), true);
             }
             else
             {

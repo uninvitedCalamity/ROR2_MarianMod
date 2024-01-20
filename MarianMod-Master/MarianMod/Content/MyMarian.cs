@@ -195,6 +195,31 @@ namespace MarianMod.Modules.Survivors
                 stockToConsume = 1,
                 keywordTokens = new string[] { "KEYWORD_AGILE" }
             });
+
+            SkillDef PoisonBomb = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "POISONBOMB",
+                skillNameToken = prefix + "POISONBOMB",
+                skillDescriptionToken = prefix + "POISONBOMB_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("IceGrenadeIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.PoisonBomb)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 13f,
+                beginSkillCooldownOnSkillEnd = false,
+                canceledFromSprinting = false,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.PrioritySkill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = false,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1,
+                keywordTokens = new string[] { "KEYWORD_AGILE" }
+            });
             #endregion
 
             #region Utility
@@ -274,11 +299,37 @@ namespace MarianMod.Modules.Survivors
                 stockToConsume = 1
             });
 
+            SkillDef MarianIceFlare = Modules.Skills.CreateSkillDef(new SkillDefInfo
+            {
+                skillName = prefix + "MISSILESICE",
+                skillNameToken = prefix + "MISSILESICE",
+                skillDescriptionToken = prefix + "MISSILEICE_DESCRIPTION",
+                skillIcon = Modules.Assets.mainAssetBundle.LoadAsset<Sprite>("MissileIcon"),
+                activationState = new EntityStates.SerializableEntityStateType(typeof(SkillStates.IceMissile)),//Marian_ShatteringPierce)),
+                activationStateMachineName = "Weapon",
+                baseMaxStock = 1,
+                baseRechargeInterval = 9f,
+                beginSkillCooldownOnSkillEnd = true,
+                canceledFromSprinting = true,
+                forceSprintDuringState = false,
+                fullRestockOnAssign = true,
+                interruptPriority = EntityStates.InterruptPriority.Skill,
+                resetCooldownTimerOnUse = false,
+                isCombatSkill = true,
+                mustKeyPress = true,
+                cancelSprintingOnActivation = true,
+                rechargeStock = 1,
+                requiredStock = 1,
+                stockToConsume = 1
+            });
+
             Modules.Skills.AddPrimarySkills(bodyPrefab, shootSkillDef);
             Modules.Skills.AddSecondarySkills(bodyPrefab, MarianFlare);
+            Modules.Skills.AddSecondarySkills(bodyPrefab, MarianIceFlare);
             Modules.Skills.AddUtilitySkills(bodyPrefab, GrappleSwitch);
             //Modules.Skills.AddUtilitySkills(bodyPrefab, Lunge);
             Modules.Skills.AddSpecialSkills(bodyPrefab, IceBomb);
+            Modules.Skills.AddSpecialSkills(bodyPrefab, PoisonBomb);
             #endregion
         }
 

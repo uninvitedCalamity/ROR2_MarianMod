@@ -40,22 +40,17 @@ namespace MarianMod.Modules
             #endregion
 
             #region Primary
-            LanguageAPI.Add(prefix + "PRIMARY_SLASH_NAME", "Sword");
-            LanguageAPI.Add(prefix + "PRIMARY_SLASH_DESCRIPTION", Helpers.agilePrefix + $"Swing forward for <style=cIsDamage>{100f * StaticValues.swordDamageCoefficient}% damage</style>.");
             #endregion
 
             #region Secondary
-            LanguageAPI.Add(prefix + "SECONDARY_GUN_NAME", "Handgun");
-            LanguageAPI.Add(prefix + "SECONDARY_GUN_DESCRIPTION", Helpers.agilePrefix + $"Fire a handgun for <style=cIsDamage>{100f * StaticValues.gunDamageCoefficient}% damage</style>.");
-
             LanguageAPI.Add(prefix + "ICEBOMB", "Ice bomb");
-            LanguageAPI.Add(prefix + "ICEBOMB_DESCRIPTION", $"Throw a grenade, freezing enemies for <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef}% damage</style> over {2 * MarianMod.Modules.Projectiles.iceProc} seconds.");
+            LanguageAPI.Add(prefix + "ICEBOMB_DESCRIPTION", $"Throw a grenade, dealing <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef}% damage</style> and freezing enemies over {2 * MarianMod.Modules.Projectiles.iceProc} seconds.");
+
+            LanguageAPI.Add(prefix + "POISONBOMB", "Poison bomb");
+            LanguageAPI.Add(prefix + "POISONBOMB_DESCRIPTION", $"Throw a grenade, dealing <style=cIsDamage>{100f * MarianMod.SkillStates.MarianIceBomb.DamageCoef * 50}% damage</style> and poisoning enemies for 10 seconds.");
             #endregion
 
             #region Utility
-            LanguageAPI.Add(prefix + "UTILITY_ROLL_NAME", "Roll");
-            LanguageAPI.Add(prefix + "UTILITY_ROLL_DESCRIPTION", "Roll a short distance, gaining <style=cIsUtility>300 armor</style>. <style=cIsUtility>You cannot be hit during the roll.</style>.");
-
             LanguageAPI.Add(prefix + "GRAPPLESWITCH", "Grappling hook");
             LanguageAPI.Add(prefix + "GRAPPLESWITCH_DESCRIPTION", $"Fire a grappling hook from primary, pulling directly to the grappling hook. If grapplng to an enemy, stun and deal <style=cIsDamage>{100f * MarianMod.SkillStates.Marian_Grapple_simple.damageCoef}% damage</style>.");
             #endregion
@@ -64,8 +59,12 @@ namespace MarianMod.Modules
             LanguageAPI.Add(prefix + "SPECIAL_BOMB_NAME", "Bomb");
             LanguageAPI.Add(prefix + "SPECIAL_BOMB_DESCRIPTION", $"Throw a bomb for <style=cIsDamage>{100f * StaticValues.bombDamageCoefficient}% damage</style>.");
 
-            LanguageAPI.Add(prefix + "MISSILES", "Smart missile barrage");
-            LanguageAPI.Add(prefix + "MISSILE_DESCRIPTION", $"Fire 5 missiles for <style=cIsDamage>5*{100f * MarianMod.SkillStates.MarianFlare.DamageCoef}% damage</style> afflicting Blight.");
+            LanguageAPI.Add(prefix + "MISSILES", "Poison smart missile barrage");
+            LanguageAPI.Add(prefix + "MISSILE_DESCRIPTION", $"Fire 5 missiles for <style=cIsDamage>5*{100f * MarianMod.SkillStates.MarianFlare.DamageCoef}% damage</style> afflicting poison.");
+
+
+            LanguageAPI.Add(prefix + "MISSILESICE", "Ice smart missile barrage");
+            LanguageAPI.Add(prefix + "MISSILEICE_DESCRIPTION", $"Fire 5 missiles for <style=cIsDamage>5*{100f * MarianMod.SkillStates.MarianFlare.DamageCoef}% damage</style> afflicting freeze.");
             #endregion
 
             #region Achievements

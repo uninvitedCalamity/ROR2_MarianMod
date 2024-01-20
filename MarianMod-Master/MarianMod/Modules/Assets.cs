@@ -26,6 +26,7 @@ namespace MarianMod.Modules
         internal static GameObject MissileSprite;
         internal static GameObject MissileChargePing;
         internal static GameObject MissileChargePing2;
+        internal static GameObject MissileChargePing3;
 
         // networked hit sounds
         internal static NetworkSoundEventDef swordHitSoundEvent;
@@ -108,7 +109,14 @@ namespace MarianMod.Modules
             iceBombExplosion = Assets.LoadEffect("IceGrenade");
             iceBombExplosion.GetComponent<EffectComponent>().soundName = "Play_engi_seekerMissile_explode";
             MissileChargePing = Assets.LoadEffect("MarianPing1");
+            Modules.CustomScripts.PlaySoundOnDeath PD = MissileChargePing.AddComponent<Modules.CustomScripts.PlaySoundOnDeath>();
+            PD.ice = false;
             MissileChargePing2 = Assets.LoadEffect("MarianPing2");
+            PD = MissileChargePing2.AddComponent<Modules.CustomScripts.PlaySoundOnDeath>();
+            PD.ice = false;
+            MissileChargePing3 = Assets.LoadEffect("MarianPing3");
+            PD = MissileChargePing3.AddComponent<Modules.CustomScripts.PlaySoundOnDeath>();
+            PD.ice = false;
 
 
             if (bombExplosionEffect)

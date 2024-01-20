@@ -15,7 +15,7 @@ namespace MarianMod
 {
     [BepInDependency("com.bepis.r2api", BepInDependency.DependencyFlags.HardDependency)]
     [NetworkCompatibility(CompatibilityLevel.EveryoneMustHaveMod, VersionStrictness.EveryoneNeedSameModVersion)]
-    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.1.3")]
+    [BepInPlugin("com.uninvitedcalamity.MarianMod", "UninvitedCalamity_MarianMod", "1.2.2")]
     [BepInDependency("com.johnedwa.RTAutoSprintEx", BepInDependency.DependencyFlags.SoftDependency)]
     [R2APISubmoduleDependency(new string[]
     {
@@ -32,7 +32,7 @@ namespace MarianMod
         //   this shouldn't even have to be said
         public const string MODUID = "com.uninvitedcalamity.MarianMod";
         public const string MODNAME = "UninvitedCalamity_MarianMod";
-        public const string MODVERSION = "1.1.3";
+        public const string MODVERSION = "1.2.2";
 
         // a prefix for name tokens to prevent conflicts- please capitalize all name tokens for convention
         public const string DEVELOPER_PREFIX = "UninvitedCalamity";

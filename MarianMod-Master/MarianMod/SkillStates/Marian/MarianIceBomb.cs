@@ -27,6 +27,7 @@ namespace MarianMod.SkillStates
         float base_desired_speed = 10;
         float max_multiplier = 500;
         static public float DamageCoef = 0.1f;
+        public float damage_mult = 1;
         public override void OnEnter()
         {
             base.OnEnter();
@@ -38,12 +39,23 @@ namespace MarianMod.SkillStates
             this.modelTransform = base.GetModelTransform();
             this.locator = modelTransform.GetComponent<ChildLocator>();
 
-            Icebomb = Modules.Projectiles.IceBomb;
+            Icebomb = setPrefab();
 
             //base.PlayAnimation("Gesture, Override", "ShootGun", "ShootGun.playbackRate", this.duration);
             float firerate = (1 / windUp) * base.attackSpeedStat;
             //animator.SetFloat("Firerate", firerate);
             //base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
+            damage_mult = setMult();
+        }
+
+        public virtual float setMult()
+        {
+            return 1;
+        }
+
+        public virtual GameObject setPrefab()
+        {
+            return Modules.Projectiles.IceBomb;
         }
 
         public void ScatterFire(Vector3 newDir)
@@ -77,7 +89,7 @@ namespace MarianMod.SkillStates
                     locator.FindChild("FirePoint").position,
                     Util.QuaternionSafeLookRotation(newDir),//aimRay.direction),
                     base.gameObject,
-                    DamageCoef * base.damageStat,
+                    DamageCoef * base.damageStat * damage_mult,
                     0f,
                     base.RollCrit(),
                     DamageColorIndex.Default,
