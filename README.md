@@ -29,7 +29,7 @@ Close range:
 Long range:
 ![InRangeLong](https://raw.githubusercontent.com/uninvitedCalamity/ROR2_MarianMod/main/Images/20231204195610_1.jpg)
 Out of range:
-![OutOfRange](https://github.com/uninvitedCalamity/ROR2_MarianMod/blob/main/Images/20231204195618_1.jpg)
+![OutOfRange](https://raw.githubusercontent.com/uninvitedCalamity/ROR2_MarianMod/main/Images/20231204195618_1.jpg)
 
 ### Ice bomb
 Marian throws/fires an Ice bomb, freezing enemies for 4.6 seconds
