@@ -21,6 +21,8 @@ namespace MarianMod.Modules
             Modules.Content.AddEntityState(typeof(MarianIceBomb));
             Modules.Content.AddEntityState(typeof(GrappleSwitch));
             Modules.Content.AddEntityState(typeof(MarianFlare));
+            Modules.Content.AddEntityState(typeof(IceMissile));
+            Modules.Content.AddEntityState(typeof(PoisonBomb));
         }
     }
 }

@@ -38,14 +38,14 @@ namespace MarianMod.SkillStates
         int missileCount = 5;
         int TargetCount;
         int onTarget = 0;
-        Transform[] Targets = new Transform[50];
+        //Transform[] Targets = new Transform[50];
         Transform Target;
         Ray AimRayCopy;
         static public float DamageCoef = 2.5f;
         float targetRefresh = 0.1f;
-        Transform[] indicators = new Transform[50];
+        //Transform[] indicators = new Transform[50];
         GameObject Camera;
-        float Range = 150;
+        public const float Range = 150;
         float IterDelay = .9f;
         float IterTimer = 0;
         int charge = 1;
@@ -57,6 +57,7 @@ namespace MarianMod.SkillStates
         bool CoolingDown = false;
         int firingcount = 0;
         GameObject Missile;
+        MarianMod.Modules.CustomScripts.SpriteManager SM;
 
         public override void OnEnter()
         {
@@ -73,7 +74,7 @@ namespace MarianMod.SkillStates
             this.animator = base.GetModelAnimator();
             this.modelTransform = base.GetModelTransform();
             this.locator = modelTransform.GetComponent<ChildLocator>();
-
+            SM = characterBody.GetComponent<MarianMod.Modules.CustomScripts.SpriteManager>();
             //bombPrefab = Modules.Projectiles.stickyFirePrefab;
             bombPrefab = Modules.Projectiles.Missile;
 
@@ -140,20 +141,20 @@ namespace MarianMod.SkillStates
 
         private void GetCurrentTargetInfo()
         {
-            for (int i = 0; i < Targets.Length; i++)
+            for (int i = 0; i < SM.Targets.Length; i++)
             {
-                if (Targets[i] != null)
+                if (SM.Targets[i] != null)
                 {
-                    Targets[i] = null;
+                    SM.Targets[i] = null;
                 }
             }
-            for (int i = 0; i < indicators.Length; i++)
+            for (int i = 0; i < SM.indicators.Length; i++)
             {
-                if (indicators[i] != null)
+                if (SM.indicators[i] != null)
                 {
-                    Destroy(indicators[i].gameObject);
+                    Destroy(SM.indicators[i].gameObject);
                 }
-                indicators[i] = null;
+                SM.indicators[i] = null;
             }
 
             Ray aimRay = base.GetAimRay();
@@ -265,16 +266,17 @@ namespace MarianMod.SkillStates
 
                     if (!interrupted)
                     {
-                        Targets[TargetCount] = hurtBox.transform;
+                        //Move this to script on Model, like with mongrel's old Borzoi
+                        SM.Targets[TargetCount] = hurtBox.transform;
 
                         if (base.isAuthority && base.characterBody.isPlayerControlled)
                         {
-                            if (indicators[TargetCount] == null)
+                            if (SM.indicators[TargetCount] == null)
                             {
                                 Quaternion LR = Quaternion.LookRotation((hurtBox.transform.position - BaseRay.origin).normalized);
-                                indicators[TargetCount] = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.MissileSprite, hurtBox.transform.position, LR).transform;
-                                indicators[TargetCount].localScale = new Vector3(1, 1, 1);
-                                indicators[TargetCount].LookAt(BaseRay.origin);
+                                SM.indicators[TargetCount] = UnityEngine.Object.Instantiate<GameObject>(Modules.Assets.MissileSprite, hurtBox.transform.position, LR).transform;
+                                SM.indicators[TargetCount].localScale = new Vector3(1, 1, 1);
+                                SM.indicators[TargetCount].LookAt(BaseRay.origin);
                             }
                         }
                         TargetCount++;                      
@@ -315,28 +317,33 @@ namespace MarianMod.SkillStates
                 Log.Debug("Camera is Null");
             return Vector3.zero;
         }
-        public override void Update()
-        {
-            base.Update();
 
-            for (int i = 0; i < Targets.Length; i++)
+        public void UpdateIndicators()
+        {
+            for (int i = 0; i < SM.Targets.Length; i++)
             {
-                if (Targets[i] != null)
+                if (SM.Targets[i] != null)
                 {
-                    if (indicators[i] != null)
+                    if (SM.indicators[i] != null)
                     {
-                        setPostion(indicators[i], Targets[i].transform.position);
+                        setPostion(SM.indicators[i], SM.Targets[i].transform.position);
                     }
                 }
             }
+        }
+
+        public override void Update()
+        {
+            base.Update();
+            //UpdateIndicators();
         }
         bool Refunded = false;
         public void Fire(Vector3 newDir)
         {
             base.PlayAnimation("Gesture, Override", "ShootGun", "Firerate", windup);
-            if (Targets[onTarget] != null)
+            if (SM.Targets[onTarget] != null)
             {
-                Target = Targets[onTarget];// nijhoqefw.transform;
+                Target = SM.Targets[onTarget];// nijhoqefw.transform;
                 onTarget++;
             }
             else
@@ -384,18 +391,19 @@ namespace MarianMod.SkillStates
         public override void FixedUpdate()
         {
             base.FixedUpdate();
+            //UpdateIndicators();
             base.characterBody.SetAimTimer(2f);
             if (!base.inputBank.skill2.down && !hasReleased)
                 hasReleased = true;
             if (base.isAuthority)
             {
-                for (int i = 0; i < indicators.Length; i++)
+                for (int i = 0; i < SM.indicators.Length; i++)
                 {
-                    if (indicators[i] != null)
+                    if (SM.indicators[i] != null)
                     {
-                        indicators[i].LookAt(base.GetAimRay().origin);
-                        if (Targets[i] != null)
-                            indicators[i].position = Targets[i].position;
+                        SM.indicators[i].LookAt(base.GetAimRay().origin);
+                        if (SM.Targets[i] != null)
+                            SM.indicators[i].position = SM.Targets[i].position;
                     }
                 }
                 if (base.fixedAge >= windup)
@@ -463,7 +471,7 @@ namespace MarianMod.SkillStates
                                 {
                                     pingCount = 0;
                                     if (base.isAuthority && !CoolingDown)
-                                        missileCount = Mathf.Clamp(missileCount + 3, 5, Targets.Length);
+                                        missileCount = Mathf.Clamp(missileCount + 3, 5, SM.Targets.Length);
                                 }
                                 IterTimer = 0;
                                 charge += 1;
@@ -530,20 +538,20 @@ namespace MarianMod.SkillStates
 
         public override void OnExit()
         {
-            for (int i = 0; i < Targets.Length; i++)
+            for (int i = 0; i < SM.Targets.Length; i++)
             {
-                if (Targets[i] != null)
+                if (SM.Targets[i] != null)
                 {
-                    Targets[i] = null;
+                    SM.Targets[i] = null;
                 }
             }
-            for (int i = 0; i < indicators.Length; i++)
+            for (int i = 0; i < SM.indicators.Length; i++)
             {
-                if (indicators[i] != null)
+                if (SM.indicators[i] != null)
                 {
-                    Destroy(indicators[i].gameObject);
+                    Destroy(SM.indicators[i].gameObject);
                 }
-                indicators[i] = null;
+                SM.indicators[i] = null;
             }
             if(base.isAuthority && !hasFired)
                 if (base.activatorSkillSlot.stock < base.activatorSkillSlot.maxStock)

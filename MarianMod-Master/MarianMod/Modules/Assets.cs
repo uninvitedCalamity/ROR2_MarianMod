@@ -96,7 +96,7 @@ namespace MarianMod.Modules
             // feel free to delete everything in here and load in your own assets instead
             // it should work fine even if left as is- even if the assets aren't in the bundle
 
-            swordHitSoundEvent = CreateNetworkSoundEventDef("MarianSwordHit");
+            //swordHitSoundEvent = CreateNetworkSoundEventDef("MarianSwordHit");
 
             bombExplosionEffect = Assets.LoadEffect("MurathMissileDetonation");
 

@@ -185,6 +185,7 @@ namespace MarianMod.Modules {
             aimOrigin.transform.localPosition = bodyInfo.aimOriginPosition;
             aimOrigin.transform.localRotation = Quaternion.identity;
             bodyPrefab.GetComponent<CharacterBody>().aimOriginTransform = aimOrigin.transform;
+            bodyPrefab.AddComponent<MarianMod.Modules.CustomScripts.SpriteManager>();
 
             return modelBase.transform;
         }
@@ -200,7 +201,7 @@ namespace MarianMod.Modules {
 
             characterModel.autoPopulateLightInfos = true;
             characterModel.invisibilityCount = 0;
-            characterModel.temporaryOverlays = new List<TemporaryOverlay>();
+            characterModel.temporaryOverlays = new List<TemporaryOverlayInstance>();
 
             if (!preattached) {
                 SetupCustomRendererInfos(characterModel, customInfos);
