@@ -4,6 +4,7 @@ using RoR2.Skills;
 using UnityEngine;
 using RoR2.Projectile;
 using System.Collections.Generic;
+using System;
 
 namespace MarianMod.SkillStates
 {
@@ -27,6 +28,7 @@ namespace MarianMod.SkillStates
         GameObject impactFlash;
         int projectileCount = 5;
         static public float DamageCoef = 1;
+        public GameObject tracer;
         public override void OnEnter()
         {
             base.OnEnter();
@@ -51,6 +53,13 @@ namespace MarianMod.SkillStates
             {
                 EffectManager.SimpleMuzzleFlash(EntityStates.Engi.EngiWeapon.FireGrenades.effectPrefab, base.gameObject, text, false);
             }
+            try {
+                tracer = EntityStates.Commando.CommandoWeapon.FireShrapnel.tracerEffectPrefab;
+            }
+            catch (NullReferenceException e)
+            {
+                
+            }
         }
 
         public void ScatterFire(Vector3 newDir)
@@ -62,7 +71,7 @@ namespace MarianMod.SkillStates
             currentCount++;
 
 
-            newDir += new Vector3(Random.Range(-var, var), Random.Range(-var, var), Random.Range(-var, var));
+            newDir += new Vector3(UnityEngine.Random.Range(-var, var), UnityEngine.Random.Range(-var, var), UnityEngine.Random.Range(-var, var));
             newDir = newDir.normalized;
             //Log.Debug("Start-----------------------------------------");
             //Fire(newDir);
@@ -104,7 +113,7 @@ namespace MarianMod.SkillStates
                 sniper = false,
                 stopperMask = LayerIndex.CommonMasks.bullet,
                 weapon = null,
-                tracerEffectPrefab = EntityStates.Commando.CommandoWeapon.FireShrapnel.tracerEffectPrefab,//Shoot.tracerEffectPrefab,
+                tracerEffectPrefab = tracer,//Shoot.tracerEffectPrefab,
                 spreadPitchScale = 0f,
                 spreadYawScale = 0f,
                 queryTriggerInteraction = QueryTriggerInteraction.UseGlobal,
@@ -131,7 +140,7 @@ namespace MarianMod.SkillStates
                     newDir += aimRay.direction;
                     scatter = 0;
 
-                    newDir += new Vector3(Random.Range(-scatter, scatter), Random.Range(-scatter, scatter), Random.Range(-scatter, scatter));
+                    newDir += new Vector3(UnityEngine.Random.Range(-scatter, scatter), UnityEngine.Random.Range(-scatter, scatter), UnityEngine.Random.Range(-scatter, scatter));
                     newDir = newDir - anglePoint;
                     newDir = newDir.normalized;
                     do
